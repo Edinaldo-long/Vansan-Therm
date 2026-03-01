@@ -35,7 +35,6 @@
   .section-title { font-size:.7rem; font-weight:700; letter-spacing:.12em; text-transform:uppercase; color:var(--text-muted); display:flex; align-items:center; gap:8px; }
   .section-title::after { content:''; flex:1; height:1px; background:var(--border); }
 
-  /* === 100% mesmo estilo do historico-card original === */
   .historico-card { background:var(--card); border:2px solid var(--border); border-radius:16px; overflow:hidden; }
   .historico-toolbar {
     padding:1rem 1.5rem; border-bottom:1px solid var(--border); background:#fafcfa;
@@ -64,9 +63,13 @@
   .tag-ok   { background:#e8f5e9; color:#1b5e20; padding:2px 10px; border-radius:10px; font-size:.68rem; font-weight:700; }
   .tag-fora { background:#ffebee; color:#c62828; padding:2px 10px; border-radius:10px; font-size:.68rem; font-weight:700; }
 
-  /* Resumo cards */
+  /* Resumo cards — SEM overflow:hidden para tooltip funcionar */
   .resumo-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:1.5rem; margin-bottom:1.5rem; }
-  .resumo-card { background:var(--card); border:2px solid var(--border); border-radius:16px; padding:1.2rem 1rem; text-align:center; position:relative; overflow:hidden; }
+  .resumo-card {
+    background:var(--card); border:2px solid var(--border); border-radius:16px;
+    padding:1.4rem 1rem 1.2rem; text-align:center;
+    position:relative; cursor:help;
+  }
   .resumo-card::before { content:''; position:absolute; top:0; left:0; right:0; height:4px; background:var(--verde-mid); border-radius:16px 16px 0 0; }
   .resumo-card.alerta::before { background:var(--amarelo); }
   .resumo-card.critico::before { background:var(--vermelho); }
@@ -77,15 +80,22 @@
   .resumo-unidade { font-size:1rem; color:var(--text-muted); font-weight:400; }
   .resumo-status { font-size:.68rem; font-weight:700; letter-spacing:.06em; margin-top:4px; }
 
-  .resumo-status { font-size:.68rem; font-weight:700; letter-spacing:.06em; margin-top:4px; }
-  .resumo-card { position:relative; cursor:help; }
+  /* Escala de amplitude dentro do card */
+  .amp-escala { display:flex; gap:4px; justify-content:center; margin-top:8px; flex-wrap:wrap; }
+  .amp-tag { font-size:.6rem; font-weight:700; padding:2px 8px; border-radius:8px; letter-spacing:.04em; }
+  .amp-tag.ok     { background:#e8f5e9; color:#1b5e20; }
+  .amp-tag.alerta { background:#fff8e1; color:#e65100; }
+  .amp-tag.critico{ background:#ffebee; color:#c62828; }
+  .amp-tag.ativo  { outline:2px solid currentColor; }
+
+  /* Tooltip */
   .tooltip {
     visibility:hidden; opacity:0;
-    position:absolute; bottom:calc(100% + 10px); left:50%; transform:translateX(-50%);
+    position:absolute; bottom:calc(100% + 12px); left:50%; transform:translateX(-50%);
     background:#1a2a1a; color:#fff; font-family:'DM Mono',monospace; font-size:.72rem;
-    line-height:1.5; padding:10px 14px; border-radius:10px; width:220px;
-    text-align:left; z-index:999;
-    box-shadow:0 4px 16px rgba(0,0,0,.3);
+    line-height:1.6; padding:10px 14px; border-radius:10px; width:230px;
+    text-align:left; z-index:9999;
+    box-shadow:0 4px 16px rgba(0,0,0,.35);
     transition:opacity .2s, visibility .2s;
     pointer-events:none;
   }
@@ -99,16 +109,16 @@
   .loading { font-family:'DM Mono',monospace; font-size:1.2rem; color:var(--text-muted); animation:blink 1s infinite; }
   @keyframes blink { 0%,100%{opacity:1} 50%{opacity:.3} }
 
-  @media (max-width:700px) { .resumo-grid { grid-template-columns:1fr 1fr; } }
-
   footer { text-align:center; padding:2rem; font-size:.72rem; color:var(--text-muted); font-family:'DM Mono',monospace; }
 
   @media print {
     header, footer, .btn-imprimir, .btn-voltar { display:none !important; }
     body { background:#fff; }
     main { padding:0; max-width:100%; }
+    .tooltip { display:none !important; }
   }
   @media (max-width:700px) {
+    .resumo-grid { grid-template-columns:1fr 1fr; }
     .header-logo { height:44px; }
     .header-title { display:none; }
   }
@@ -134,31 +144,44 @@
   <!-- RESUMO ANALÍTICO -->
   <div class="section-title">Resumo do Período</div>
   <div class="resumo-grid">
+
     <div class="resumo-card" id="card-tmed">
       <div class="tooltip">Média de todas as leituras de temperatura no período. Mesmo dentro dos limites ANVISA, valores próximos das bordas indicam risco para medicamentos termossensíveis.</div>
       <div class="resumo-label">🌡️ Temp. Média</div>
       <div class="resumo-valor" id="res-tmed"><span class="loading">···</span></div>
       <div class="resumo-status" id="res-tmed-st"></div>
     </div>
+
     <div class="resumo-card" id="card-umed">
       <div class="tooltip">Média de todas as leituras de umidade no período. Umidade alta favorece mofo e degradação de cápsulas e comprimidos. Umidade baixa resseca embalagens e pós.</div>
       <div class="resumo-label">💧 Umid. Média</div>
       <div class="resumo-valor" id="res-umed"><span class="loading">···</span></div>
       <div class="resumo-status" id="res-umed-st"></div>
     </div>
+
     <div class="resumo-card" id="card-hfora">
-      <div class="tooltip">Quantidade de leituras em que temperatura ou umidade estavam fora dos limites ANVISA RDC 301. Cada leitura fora representa ~5 minutos de exposição inadequada.</div>
+      <div class="tooltip">Quantidade de leituras em que temperatura ou umidade estavam fora dos limites ANVISA RDC 301. Cada leitura representa ~5 min de monitoramento.</div>
       <div class="resumo-label">⚠️ Leituras Fora</div>
       <div class="resumo-valor" id="res-hfora"><span class="loading">···</span></div>
       <div class="resumo-status" id="res-hfora-st"></div>
     </div>
+
     <div class="resumo-card" id="card-amp">
-      <div class="tooltip">Diferença entre a temperatura máxima e mínima do período. Variações bruscas e frequentes podem degradar medicamentos mesmo quando os valores estão dentro do limite. Ideal: abaixo de 5°C.</div>
+      <div class="tooltip">Diferença entre a temperatura máxima e mínima do período. Variações bruscas degradam medicamentos mesmo dentro do limite ANVISA. Veja a escala abaixo.</div>
       <div class="resumo-label">📈 Amplitude Térmica</div>
       <div class="resumo-valor" id="res-amp"><span class="loading">···</span></div>
       <div class="resumo-status" id="res-amp-st"></div>
+      <!-- Escala visual de referência -->
+      <div class="amp-escala">
+        <span class="amp-tag ok"    id="amp-tag-ok">✓ ≤5°C Estável</span>
+        <span class="amp-tag alerta" id="amp-tag-alerta">⚡ ≤8°C Moderada</span>
+        <span class="amp-tag critico" id="amp-tag-critico">⚠ &gt;8°C Alta</span>
+      </div>
     </div>
+
   </div>
+
+  <!-- TABELA -->
   <div class="historico-card">
     <div class="historico-toolbar">
       <div class="historico-toolbar-info">
@@ -172,7 +195,6 @@
         <thead>
           <tr>
             <th>Data / Hora</th>
-
             <th>Temp. Atual</th>
             <th>Temp. Mín</th>
             <th>Temp. Máx</th>
@@ -233,8 +255,8 @@ async function carregar(){
       return;
     }
 
-    const ts = feeds.map(f=>parseFloat(f.field1)).filter(v=>!isNaN(v));
-    const hs = feeds.map(f=>parseFloat(f.field2)).filter(v=>!isNaN(v));
+    const ts  = feeds.map(f=>parseFloat(f.field1)).filter(v=>!isNaN(v));
+    const hs  = feeds.map(f=>parseFloat(f.field2)).filter(v=>!isNaN(v));
     const tMn = ts.length?Math.min(...ts):null;
     const tMx = ts.length?Math.max(...ts):null;
     const uMn = hs.length?Math.min(...hs):null;
@@ -272,6 +294,7 @@ async function carregar(){
     document.getElementById('res-hfora').className=`resumo-valor ${sf!='ok'?sf:''}`;
     document.getElementById('card-hfora').className=`resumo-card ${sf!='ok'?sf:''}`;
     document.getElementById('res-hfora-st').innerHTML=fora===0?'<span style="color:#2e7d32">✓ Nenhuma fora</span>':`<span style="color:${sf==='critico'?'#c62828':'#e65100'}">${pctFora}% das leituras</span>`;
+
     // Amplitude térmica
     if(amp!==null){
       const sa=amp<=5?'ok':amp<=8?'alerta':'critico';
@@ -279,9 +302,13 @@ async function carregar(){
       document.getElementById('res-amp').className=`resumo-valor ${sa!='ok'?sa:''}`;
       document.getElementById('card-amp').className=`resumo-card ${sa!='ok'?sa:''}`;
       document.getElementById('res-amp-st').innerHTML=sa==='ok'?'<span style="color:#2e7d32">✓ Estável</span>':sa==='alerta'?'<span style="color:#e65100">⚡ Moderada</span>':'<span style="color:#c62828">⚠ Alta variação</span>';
+      // Destaca a tag ativa na escala
+      document.getElementById('amp-tag-ok').classList.toggle('ativo', sa==='ok');
+      document.getElementById('amp-tag-alerta').classList.toggle('ativo', sa==='alerta');
+      document.getElementById('amp-tag-critico').classList.toggle('ativo', sa==='critico');
     }
 
-    // Amostra: máximo 500 linhas para não travar o navegador
+    // Tabela — amostra máx 500 linhas
     const step   = Math.ceil(feeds.length/500);
     const sample = feeds.filter((_,i)=>i%step===0);
 
