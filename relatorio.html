@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Relatório — Pharma & Cia</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --verde: #1b5e20; --verde-mid: #2e7d32; --verde-light: #4caf50;
+    --verde-pale: #e8f5e9; --vermelho: #c62828; --amarelo: #f9a825;
+    --bg: #f0f4f0; --card: #ffffff; --text: #1a2a1a;
+    --text-muted: #5a7a5a; --border: #c8dcc8;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:'Syne',sans-serif; background:var(--bg); color:var(--text); min-height:100vh; }
+
+  header {
+    background:#0a0a0a; padding:0 2rem;
+    display:flex; align-items:center; justify-content:space-between;
+    height:72px; position:sticky; top:0; z-index:100;
+    box-shadow:0 2px 16px rgba(0,0,0,.4);
+    border-bottom:2px solid var(--verde-mid);
+  }
+  .header-logo { height:56px; width:auto; object-fit:contain; }
+  .header-right { display:flex; align-items:center; gap:16px; }
+  .header-title { display:flex; flex-direction:column; align-items:flex-end; }
+  .header-title span:first-child { font-size:.7rem; font-weight:700; letter-spacing:.12em; text-transform:uppercase; color:var(--verde-light); }
+  .header-title span:last-child { font-family:'DM Mono',monospace; font-size:.65rem; color:rgba(255,255,255,.5); }
+  .btn-voltar { display:flex; align-items:center; gap:6px; padding:5px 14px; background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.18); border-radius:20px; color:rgba(255,255,255,.75); font-family:'DM Mono',monospace; font-size:.72rem; text-decoration:none; transition:all .15s; }
+  .btn-voltar:hover { background:rgba(255,255,255,.18); color:#fff; }
+
+  main { max-width:1200px; margin:0 auto; padding:2rem 1.5rem; display:grid; gap:1.5rem; }
+
+  .section-title { font-size:.7rem; font-weight:700; letter-spacing:.12em; text-transform:uppercase; color:var(--text-muted); display:flex; align-items:center; gap:8px; }
+  .section-title::after { content:''; flex:1; height:1px; background:var(--border); }
+
+  /* === 100% mesmo estilo do historico-card original === */
+  .historico-card { background:var(--card); border:2px solid var(--border); border-radius:16px; overflow:hidden; }
+  .historico-toolbar {
+    padding:1rem 1.5rem; border-bottom:1px solid var(--border); background:#fafcfa;
+    display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:.75rem;
+  }
+  .historico-toolbar-info { display:flex; flex-direction:column; gap:3px; }
+  .historico-toolbar-info .titulo { font-size:.72rem; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--text-muted); }
+  .historico-toolbar-info .periodo { font-family:'DM Mono',monospace; font-size:.75rem; color:var(--verde-mid); }
+  .btn-imprimir {
+    display:flex; align-items:center; gap:6px;
+    padding:5px 16px; background:var(--verde-mid); color:#fff;
+    border:none; border-radius:20px;
+    font-family:'Syne',sans-serif; font-weight:700; font-size:.75rem;
+    cursor:pointer; transition:background .2s;
+  }
+  .btn-imprimir:hover { background:var(--verde); }
+
+  .historico-scroll { overflow-x:auto; }
+  table { width:100%; border-collapse:collapse; font-size:.84rem; }
+  thead th { background:var(--verde); color:#fff; padding:10px 14px; text-align:center; font-size:.7rem; font-weight:700; letter-spacing:.06em; text-transform:uppercase; }
+  tbody tr:nth-child(even) { background:var(--verde-pale); }
+  tbody tr:hover { background:#d0ead0; }
+  tbody td { padding:9px 14px; text-align:center; font-family:'DM Mono',monospace; font-size:.8rem; border-bottom:1px solid var(--border); }
+  .td-ok     { color:var(--verde-mid); font-weight:500; }
+  .td-critico{ color:var(--vermelho); font-weight:700; }
+  .tag-ok   { background:#e8f5e9; color:#1b5e20; padding:2px 10px; border-radius:10px; font-size:.68rem; font-weight:700; }
+  .tag-fora { background:#ffebee; color:#c62828; padding:2px 10px; border-radius:10px; font-size:.68rem; font-weight:700; }
+
+  .estado { padding:2.5rem; text-align:center; color:var(--text-muted); font-family:'DM Mono',monospace; }
+  .loading { font-family:'DM Mono',monospace; font-size:1.2rem; color:var(--text-muted); animation:blink 1s infinite; }
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:.3} }
+
+  footer { text-align:center; padding:2rem; font-size:.72rem; color:var(--text-muted); font-family:'DM Mono',monospace; }
+
+  @media print {
+    header, footer, .btn-imprimir, .btn-voltar { display:none !important; }
+    body { background:#fff; }
+    main { padding:0; max-width:100%; }
+  }
+  @media (max-width:700px) {
+    .header-logo { height:44px; }
+    .header-title { display:none; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <img class="header-logo" src="logofarmacia.png" alt="Pharma & Cia"
+    onerror="this.style.display='none';document.getElementById('logo-fallback').style.display='block'">
+  <span id="logo-fallback" style="display:none;color:#4caf50;font-size:1.2rem;font-weight:700;">Pharma &amp; Cia</span>
+  <div class="header-right">
+    <div class="header-title">
+      <span>Histórico de Leituras</span>
+      <span id="header-periodo">–</span>
+    </div>
+    <a class="btn-voltar" href="index.html">← Voltar ao Monitor</a>
+  </div>
+</header>
+
+<main>
+  <div class="historico-card">
+    <div class="historico-toolbar">
+      <div class="historico-toolbar-info">
+        <span class="titulo">📋 Histórico de Leituras</span>
+        <span class="periodo" id="periodo-texto">Carregando...</span>
+      </div>
+      <button class="btn-imprimir" onclick="window.print()">🖨️ Imprimir / Salvar PDF</button>
+    </div>
+    <div class="historico-scroll">
+      <table>
+        <thead>
+          <tr>
+            <th>Data / Hora</th>
+
+            <th>Temp. Atual</th>
+            <th>Temp. Mín</th>
+            <th>Temp. Máx</th>
+            <th>Umid. Atual</th>
+            <th>Umid. Mín</th>
+            <th>Umid. Máx</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody id="tabela-historico">
+          <tr><td colspan="8" class="estado"><span class="loading">···</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</main>
+
+<footer>
+  Pharma &amp; Cia · ANVISA RDC 301 · Laboratório · Responsável: Edinado Santos de Almeida<br>
+  Limites ANVISA: Temperatura 15°C – 25°C | Umidade Relativa 40% – 70%
+</footer>
+
+<script>
+const CHANNEL='3196550', API_KEY='6HM2HMXBNJP32QOC';
+const TMIN=15,TMAX=25,UMIN=40,UMAX=70;
+
+function tOk(v){ return v>=TMIN&&v<=TMAX; }
+function uOk(v){ return v>=UMIN&&v<=UMAX; }
+function fmtDH(iso){
+  const d=new Date(iso);
+  return d.toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit'})+' '+d.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
+}
+function fmtDataBR(str){ const [y,m,d]=str.split('-'); return `${d}/${m}/${y}`; }
+
+async function carregar(){
+  const params = new URLSearchParams(window.location.search);
+  const inicio = params.get('inicio');
+  const fim    = params.get('fim');
+  const tbody  = document.getElementById('tabela-historico');
+
+  if(!inicio||!fim){
+    tbody.innerHTML='<tr><td colspan="8" class="estado">Parâmetros inválidos. Volte e selecione o período.</td></tr>';
+    return;
+  }
+
+  const periodoStr = `Período: ${fmtDataBR(inicio)} a ${fmtDataBR(fim)}`;
+  document.getElementById('periodo-texto').textContent  = periodoStr;
+  document.getElementById('header-periodo').textContent = periodoStr;
+
+  try{
+    const url=`https://api.thingspeak.com/channels/${CHANNEL}/feeds.json?api_key=${API_KEY}&start=${encodeURIComponent(inicio+'T00:00:00-03:00')}&end=${encodeURIComponent(fim+'T23:59:59-03:00')}&results=8000`;
+    const res   = await fetch(url);
+    const data  = await res.json();
+    const feeds = (data.feeds||[]).reverse();
+
+    if(!feeds.length){
+      tbody.innerHTML='<tr><td colspan="8" class="estado">Nenhum dado encontrado para o período selecionado.</td></tr>';
+      return;
+    }
+
+    const ts = feeds.map(f=>parseFloat(f.field1)).filter(v=>!isNaN(v));
+    const hs = feeds.map(f=>parseFloat(f.field2)).filter(v=>!isNaN(v));
+    const tMn = ts.length?Math.min(...ts):null;
+    const tMx = ts.length?Math.max(...ts):null;
+    const uMn = hs.length?Math.min(...hs):null;
+    const uMx = hs.length?Math.max(...hs):null;
+
+    // Amostra: máximo 500 linhas para não travar o navegador
+    const step   = Math.ceil(feeds.length/500);
+    const sample = feeds.filter((_,i)=>i%step===0);
+
+    tbody.innerHTML = sample.map(f=>{
+      const t=parseFloat(f.field1), u=parseFloat(f.field2);
+      const tBom=!isNaN(t)&&tOk(t), uBom=!isNaN(u)&&uOk(u);
+      return `<tr>
+        <td>${fmtDH(f.created_at)}</td>
+        <td class="${!isNaN(t)?(tBom?'td-ok':'td-critico'):''}">${!isNaN(t)?t.toFixed(1)+'°C':'–'}</td>
+        <td>${tMn!==null?tMn.toFixed(1)+'°C':'–'}</td>
+        <td>${tMx!==null?tMx.toFixed(1)+'°C':'–'}</td>
+        <td class="${!isNaN(u)?(uBom?'td-ok':'td-critico'):''}">${!isNaN(u)?u.toFixed(1)+'%':'–'}</td>
+        <td>${uMn!==null?uMn.toFixed(1)+'%':'–'}</td>
+        <td>${uMx!==null?uMx.toFixed(1)+'%':'–'}</td>
+        <td>${(tBom&&uBom)?'<span class="tag-ok">✓ OK</span>':'<span class="tag-fora">⚠ FORA</span>'}</td>
+      </tr>`;
+    }).join('');
+
+  }catch(e){
+    tbody.innerHTML=`<tr><td colspan="8" class="estado">Erro ao buscar dados: ${e.message}</td></tr>`;
+  }
+}
+
+carregar();
+</script>
+</body>
+</html>
