@@ -273,7 +273,11 @@ const TMIN=15,TMAX=25,UMIN=40,UMAX=70;
 window.onload = () => {
   const hoje = new Date();
   const fmt  = d => d.toISOString().split('T')[0];
-  document.getElementById('data-fim').value = fmt(hoje);
+  const hojeStr = fmt(hoje);
+  // Limita ambos os campos para não permitir datas futuras
+  document.getElementById('data-inicio').max = hojeStr;
+  document.getElementById('data-fim').max = hojeStr;
+  document.getElementById('data-fim').value = hojeStr;
   const ini = new Date(); ini.setDate(hoje.getDate()-7);
   document.getElementById('data-inicio').value = fmt(ini);
 };
