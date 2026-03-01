@@ -64,9 +64,24 @@
   .tag-ok   { background:#e8f5e9; color:#1b5e20; padding:2px 10px; border-radius:10px; font-size:.68rem; font-weight:700; }
   .tag-fora { background:#ffebee; color:#c62828; padding:2px 10px; border-radius:10px; font-size:.68rem; font-weight:700; }
 
+  /* Resumo cards */
+  .resumo-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:1.5rem; margin-bottom:1.5rem; }
+  .resumo-card { background:var(--card); border:2px solid var(--border); border-radius:16px; padding:1.2rem 1rem; text-align:center; position:relative; overflow:hidden; }
+  .resumo-card::before { content:''; position:absolute; top:0; left:0; right:0; height:4px; background:var(--verde-mid); border-radius:16px 16px 0 0; }
+  .resumo-card.alerta::before { background:var(--amarelo); }
+  .resumo-card.critico::before { background:var(--vermelho); }
+  .resumo-label { font-size:.62rem; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--text-muted); margin-bottom:8px; }
+  .resumo-valor { font-family:'DM Mono',monospace; font-size:2rem; font-weight:500; color:var(--verde); line-height:1; margin-bottom:6px; }
+  .resumo-valor.alerta  { color:var(--amarelo); }
+  .resumo-valor.critico { color:var(--vermelho); }
+  .resumo-unidade { font-size:1rem; color:var(--text-muted); font-weight:400; }
+  .resumo-status { font-size:.68rem; font-weight:700; letter-spacing:.06em; margin-top:4px; }
+
   .estado { padding:2.5rem; text-align:center; color:var(--text-muted); font-family:'DM Mono',monospace; }
   .loading { font-family:'DM Mono',monospace; font-size:1.2rem; color:var(--text-muted); animation:blink 1s infinite; }
   @keyframes blink { 0%,100%{opacity:1} 50%{opacity:.3} }
+
+  @media (max-width:700px) { .resumo-grid { grid-template-columns:1fr 1fr; } }
 
   footer { text-align:center; padding:2rem; font-size:.72rem; color:var(--text-muted); font-family:'DM Mono',monospace; }
 
@@ -97,6 +112,31 @@
 </header>
 
 <main>
+
+  <!-- RESUMO ANALÍTICO -->
+  <div class="section-title">Resumo do Período</div>
+  <div class="resumo-grid">
+    <div class="resumo-card" id="card-tmed">
+      <div class="resumo-label">🌡️ Temp. Média</div>
+      <div class="resumo-valor" id="res-tmed"><span class="loading">···</span></div>
+      <div class="resumo-status" id="res-tmed-st"></div>
+    </div>
+    <div class="resumo-card" id="card-umed">
+      <div class="resumo-label">💧 Umid. Média</div>
+      <div class="resumo-valor" id="res-umed"><span class="loading">···</span></div>
+      <div class="resumo-status" id="res-umed-st"></div>
+    </div>
+    <div class="resumo-card" id="card-hfora">
+      <div class="resumo-label">⚠️ Leituras Fora</div>
+      <div class="resumo-valor" id="res-hfora"><span class="loading">···</span></div>
+      <div class="resumo-status" id="res-hfora-st"></div>
+    </div>
+    <div class="resumo-card" id="card-amp">
+      <div class="resumo-label">📈 Amplitude Térmica</div>
+      <div class="resumo-valor" id="res-amp"><span class="loading">···</span></div>
+      <div class="resumo-status" id="res-amp-st"></div>
+    </div>
+  </div>
   <div class="historico-card">
     <div class="historico-toolbar">
       <div class="historico-toolbar-info">
@@ -177,6 +217,47 @@ async function carregar(){
     const tMx = ts.length?Math.max(...ts):null;
     const uMn = hs.length?Math.min(...hs):null;
     const uMx = hs.length?Math.max(...hs):null;
+
+    // === RESUMO ANALÍTICO ===
+    const tMed = ts.length ? ts.reduce((a,b)=>a+b,0)/ts.length : null;
+    const uMed = hs.length ? hs.reduce((a,b)=>a+b,0)/hs.length : null;
+    const amp  = (tMn!==null&&tMx!==null) ? tMx-tMn : null;
+    const fora = feeds.filter(f=>{
+      const t=parseFloat(f.field1), u=parseFloat(f.field2);
+      return (!isNaN(t)&&(t<TMIN||t>TMAX)) || (!isNaN(u)&&(u<UMIN||u>UMAX));
+    }).length;
+    const pctFora = feeds.length ? ((fora/feeds.length)*100).toFixed(1) : 0;
+
+    // Temp média
+    if(tMed!==null){
+      const s=tMed<TMIN||tMed>TMAX?'critico':tMed>TMAX-2||tMed<TMIN+2?'alerta':'ok';
+      document.getElementById('res-tmed').innerHTML=`${tMed.toFixed(1)}<span class="resumo-unidade">°C</span>`;
+      document.getElementById('res-tmed').className=`resumo-valor ${s!='ok'?s:''}`;
+      document.getElementById('card-tmed').className=`resumo-card ${s!='ok'?s:''}`;
+      document.getElementById('res-tmed-st').innerHTML=s==='ok'?'<span style="color:#2e7d32">✓ Dentro do limite</span>':s==='alerta'?'<span style="color:#e65100">⚡ Próximo do limite</span>':'<span style="color:#c62828">⚠ Fora do limite</span>';
+    }
+    // Umid média
+    if(uMed!==null){
+      const s=uMed<UMIN||uMed>UMAX?'critico':uMed>UMAX-5||uMed<UMIN+5?'alerta':'ok';
+      document.getElementById('res-umed').innerHTML=`${uMed.toFixed(1)}<span class="resumo-unidade">%</span>`;
+      document.getElementById('res-umed').className=`resumo-valor ${s!='ok'?s:''}`;
+      document.getElementById('card-umed').className=`resumo-card ${s!='ok'?s:''}`;
+      document.getElementById('res-umed-st').innerHTML=s==='ok'?'<span style="color:#2e7d32">✓ Dentro do limite</span>':s==='alerta'?'<span style="color:#e65100">⚡ Próximo do limite</span>':'<span style="color:#c62828">⚠ Fora do limite</span>';
+    }
+    // Leituras fora
+    const sf=fora===0?'ok':pctFora>20?'critico':'alerta';
+    document.getElementById('res-hfora').innerHTML=`${fora}<span class="resumo-unidade"> / ${feeds.length}</span>`;
+    document.getElementById('res-hfora').className=`resumo-valor ${sf!='ok'?sf:''}`;
+    document.getElementById('card-hfora').className=`resumo-card ${sf!='ok'?sf:''}`;
+    document.getElementById('res-hfora-st').innerHTML=fora===0?'<span style="color:#2e7d32">✓ Nenhuma fora</span>':`<span style="color:${sf==='critico'?'#c62828':'#e65100'}">${pctFora}% das leituras</span>`;
+    // Amplitude térmica
+    if(amp!==null){
+      const sa=amp<=5?'ok':amp<=8?'alerta':'critico';
+      document.getElementById('res-amp').innerHTML=`${amp.toFixed(1)}<span class="resumo-unidade">°C</span>`;
+      document.getElementById('res-amp').className=`resumo-valor ${sa!='ok'?sa:''}`;
+      document.getElementById('card-amp').className=`resumo-card ${sa!='ok'?sa:''}`;
+      document.getElementById('res-amp-st').innerHTML=sa==='ok'?'<span style="color:#2e7d32">✓ Estável</span>':sa==='alerta'?'<span style="color:#e65100">⚡ Moderada</span>':'<span style="color:#c62828">⚠ Alta variação</span>';
+    }
 
     // Amostra: máximo 500 linhas para não travar o navegador
     const step   = Math.ceil(feeds.length/500);
