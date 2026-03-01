@@ -93,6 +93,14 @@
   .resumo-valor.critico { color:var(--vermelho); }
   .resumo-status { font-size:.68rem; font-weight:700; letter-spacing:.06em; margin-top:4px; }
 
+  .limite-ref {
+    margin-top:8px;
+    font-family:'DM Mono',monospace;
+    font-size:.68rem;
+    color:var(--text-muted);
+    letter-spacing:.02em;
+  }
+
   /* ─── ESCALA DE AMPLITUDE ─── (melhorada) */
   .amp-escala {
     display:flex;
@@ -230,20 +238,22 @@
   <div class="section-title">Resumo do Período</div>
   <div class="resumo-grid">
 
-    <!-- Card 1 — tooltip abre para cima (padrão) -->
+    <!-- Card 1 — tooltip abre para baixo -->
     <div class="resumo-card" id="card-tmed">
       <div class="tooltip">Média de todas as leituras de temperatura no período. Mesmo dentro dos limites ANVISA, valores próximos das bordas indicam risco para medicamentos termossensíveis.</div>
       <div class="resumo-label">🌡️ Temp. Média</div>
       <div class="resumo-valor" id="res-tmed"><span class="loading">···</span></div>
       <div class="resumo-status" id="res-tmed-st"></div>
+      <div class="limite-ref">Limite ANVISA: 15°C – 25°C</div>
     </div>
 
-    <!-- Card 2 — tooltip abre para cima (padrão) -->
+    <!-- Card 2 — tooltip abre para baixo -->
     <div class="resumo-card" id="card-umed">
       <div class="tooltip">Média de todas as leituras de umidade no período. Umidade alta favorece mofo e degradação de cápsulas e comprimidos. Umidade baixa resseca embalagens e pós.</div>
       <div class="resumo-label">💧 Umid. Média</div>
       <div class="resumo-valor" id="res-umed"><span class="loading">···</span></div>
       <div class="resumo-status" id="res-umed-st"></div>
+      <div class="limite-ref">Limite ANVISA: 40% – 70%</div>
     </div>
 
     <!-- Card 3 — tooltip-right para evitar corte -->
