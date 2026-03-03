@@ -337,10 +337,10 @@ function gerarRelatorio() {
 
 // ============================================================
 // RELATÓRIO OFICIAL ANVISA
-// Chama o Apps Script que identifica a aba correta pelo mês
-// e retorna a URL do PDF com o gid dinâmico
+// Abre direto no Apps Script com window.open (sem fetch/CORS).
+// O Apps Script detecta a aba do mês e faz redirect para o PDF.
 // ============================================================
-async function baixarRelatorioOficial() {
+function baixarRelatorioOficial() {
   const ini = document.getElementById('anvisa-inicio').value;
   const fim = document.getElementById('anvisa-fim').value;
 
@@ -357,28 +357,9 @@ async function baixarRelatorioOficial() {
     return;
   }
 
-  const btn = document.getElementById('btn-anvisa');
-  btn.innerHTML        = '⏳ Gerando PDF...';
-  btn.disabled         = true;
-  btn.style.background = '#546e7a';
-
-  try {
-    const resp = await fetch(`${APPS_SCRIPT_URL}?acao=pdf&inicio=${ini}&fim=${fim}`);
-    const json = await resp.json();
-
-    if (json.ok) {
-      window.open(json.url, '_blank');
-    } else {
-      alert('Erro ao gerar PDF:\n' + json.erro);
-    }
-  } catch (e) {
-    alert('Erro de conexão com o servidor.\nVerifique a constante APPS_SCRIPT_URL no index.html.');
-    console.error(e);
-  } finally {
-    btn.innerHTML        = '📄 Baixar Relatório Oficial PDF';
-    btn.disabled         = false;
-    btn.style.background = '#1565c0';
-  }
+  // Abre direto no Apps Script — ele faz redirect 302 para o PDF correto
+  // Sem fetch(), sem problema de CORS com GitHub Pages
+  window.open(APPS_SCRIPT_URL + '?acao=pdf&inicio=' + ini + '&fim=' + fim, '_blank');
 }
 
 // ============================================================
