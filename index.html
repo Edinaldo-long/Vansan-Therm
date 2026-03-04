@@ -286,7 +286,7 @@ const CHANNEL = '3196550';
 const API_KEY = '6HM2HMXBNJP32QOC';
 const TMIN = 15, TMAX = 25, UMIN = 40, UMAX = 70;
 
-// ⚠️ Cole aqui a URL do seu Web App após implantar o Apps Script:
+// ⚠️ Cole aqui a URL do seu Web App do Apps Script
 // Apps Script → Implantar → Gerenciar implantações → copiar URL
 const APPS_SCRIPT_URL = 'COLE_AQUI_A_URL_DO_SEU_WEB_APP';
 
@@ -336,9 +336,11 @@ function gerarRelatorio() {
 }
 
 // ============================================================
-// RELATÓRIO OFICIAL ANVISA
-// Abre direto no Apps Script com window.open (sem fetch/CORS).
-// O Apps Script detecta a aba do mês e faz redirect para o PDF.
+// RELATÓRIO OFICIAL ANVISA — via JSONP
+// JSONP é a única técnica que funciona com Apps Script + GitHub
+// Pages sem configuração extra. Injeta uma tag <script> que
+// chama o Apps Script com ?callback=fn — ele responde com
+// fn({ok:true, url:'...'}) que o browser executa diretamente.
 // ============================================================
 function baixarRelatorioOficial() {
   const ini = document.getElementById('anvisa-inicio').value;
@@ -349,7 +351,6 @@ function baixarRelatorioOficial() {
     return;
   }
 
-  // Valida que as datas estão no mesmo mês/ano
   const [anoI, mesI] = ini.split('-');
   const [anoF, mesF] = fim.split('-');
   if (anoI !== anoF || mesI !== mesF) {
@@ -357,9 +358,45 @@ function baixarRelatorioOficial() {
     return;
   }
 
-  // Abre direto no Apps Script — ele faz redirect 302 para o PDF correto
-  // Sem fetch(), sem problema de CORS com GitHub Pages
-  window.open(APPS_SCRIPT_URL + '?acao=pdf&inicio=' + ini + '&fim=' + fim, '_blank');
+  const btn = document.getElementById('btn-anvisa');
+  btn.innerHTML        = '⏳ Gerando PDF...';
+  btn.disabled         = true;
+  btn.style.background = '#546e7a';
+
+  // Nome único para o callback JSONP desta chamada
+  const cbName = 'jsonpCb_' + Date.now();
+
+  // Timeout de segurança — 10 segundos
+  const timeout = setTimeout(() => {
+    delete window[cbName];
+    document.getElementById('jsonp-script')?.remove();
+    btn.innerHTML        = '📄 Baixar Relatório Oficial PDF';
+    btn.disabled         = false;
+    btn.style.background = '#1565c0';
+    alert('Tempo esgotado. Verifique se o Apps Script está implantado corretamente.');
+  }, 10000);
+
+  // Callback que o Apps Script vai chamar com o resultado
+  window[cbName] = function(json) {
+    clearTimeout(timeout);
+    delete window[cbName];
+    document.getElementById('jsonp-script')?.remove();
+    btn.innerHTML        = '📄 Baixar Relatório Oficial PDF';
+    btn.disabled         = false;
+    btn.style.background = '#1565c0';
+
+    if (json.ok) {
+      window.open(json.url, '_blank');
+    } else {
+      alert('Erro: ' + json.erro);
+    }
+  };
+
+  // Injeta tag <script> que chama o Apps Script com o callback
+  const script = document.createElement('script');
+  script.id  = 'jsonp-script';
+  script.src = APPS_SCRIPT_URL + '?acao=pdf&inicio=' + ini + '&fim=' + fim + '&callback=' + cbName;
+  document.body.appendChild(script);
 }
 
 // ============================================================
