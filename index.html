@@ -344,9 +344,9 @@ function gerarRelatorio() {
 }
 
 // ============================================================
-// RELATÓRIO OFICIAL ANVISA — abre PDF direto sem página intermediária
+// RELATÓRIO OFICIAL ANVISA — usa JSONP para contornar CORS
 // ============================================================
-async function baixarRelatorioOficial() {
+function baixarRelatorioOficial() {
   const ini = document.getElementById('anvisa-inicio').value;
   const fim = document.getElementById('anvisa-fim').value;
 
@@ -366,21 +366,40 @@ async function baixarRelatorioOficial() {
   btn.disabled = true;
   btn.textContent = '⏳ Gerando PDF...';
 
-  try {
-    const resp = await fetch(APPS_SCRIPT_URL + '?acao=pdf&inicio=' + ini + '&fim=' + fim);
-    const data = await resp.json();
+  // Nome único para o callback JSONP
+  const cbName = 'jsonpCb_' + Date.now();
+
+  // Timeout de segurança: 15 segundos
+  const timeout = setTimeout(() => {
+    delete window[cbName];
+    const s = document.getElementById(cbName + '_script');
+    if (s) s.remove();
+    btn.disabled = false;
+    btn.textContent = '📄 Baixar Relatório Oficial PDF';
+    alert('❌ Tempo esgotado. Tente novamente.');
+  }, 15000);
+
+  // Função que o Apps Script vai chamar com o resultado
+  window[cbName] = function(data) {
+    clearTimeout(timeout);
+    delete window[cbName];
+    const s = document.getElementById(cbName + '_script');
+    if (s) s.remove();
+    btn.disabled = false;
+    btn.textContent = '📄 Baixar Relatório Oficial PDF';
 
     if (data.ok) {
       window.open(data.url, '_blank');
     } else {
       alert('❌ Erro: ' + data.erro);
     }
-  } catch(e) {
-    alert('❌ Erro ao conectar com o servidor. Tente novamente.');
-  } finally {
-    btn.disabled = false;
-    btn.textContent = '📄 Baixar Relatório Oficial PDF';
-  }
+  };
+
+  // Injeta tag <script> com callback JSONP
+  const script = document.createElement('script');
+  script.id  = cbName + '_script';
+  script.src = APPS_SCRIPT_URL + '?acao=pdf&inicio=' + ini + '&fim=' + fim + '&callback=' + cbName;
+  document.body.appendChild(script);
 }
 
 // ============================================================
@@ -417,21 +436,21 @@ async function atualizarTempoReal() {
 
     if (!isNaN(t)) {
       const s = stT(t);
-      document.getElementById('temp-atual').innerHTML        = `${t.toFixed(1)}<span class="valor-unidade">°C</span>`;
-      document.getElementById('temp-atual').className        = `valor-atual ${s !== 'ok' ? s : ''}`;
-      document.getElementById('card-temp').className         = `sensor-card ${s !== 'ok' ? s : ''}`;
-      document.getElementById('temp-barra').style.width      = pct(t, TMIN, TMAX) + '%';
-      document.getElementById('temp-barra').className        = `progress-bar-fill ${s !== 'ok' ? s : ''}`;
+      document.getElementById('temp-atual').innerHTML         = `${t.toFixed(1)}<span class="valor-unidade">°C</span>`;
+      document.getElementById('temp-atual').className         = `valor-atual ${s !== 'ok' ? s : ''}`;
+      document.getElementById('card-temp').className          = `sensor-card ${s !== 'ok' ? s : ''}`;
+      document.getElementById('temp-barra').style.width       = pct(t, TMIN, TMAX) + '%';
+      document.getElementById('temp-barra').className         = `progress-bar-fill ${s !== 'ok' ? s : ''}`;
       document.getElementById('temp-barra-label').textContent = t.toFixed(1) + '°C';
     }
 
     if (!isNaN(u)) {
       const s = stU(u);
-      document.getElementById('umid-atual').innerHTML        = `${u.toFixed(1)}<span class="valor-unidade">%</span>`;
-      document.getElementById('umid-atual').className        = `valor-atual ${s !== 'ok' ? s : ''}`;
-      document.getElementById('card-umid').className         = `sensor-card ${s !== 'ok' ? s : ''}`;
-      document.getElementById('umid-barra').style.width      = pct(u, UMIN, UMAX) + '%';
-      document.getElementById('umid-barra').className        = `progress-bar-fill ${s !== 'ok' ? s : ''}`;
+      document.getElementById('umid-atual').innerHTML         = `${u.toFixed(1)}<span class="valor-unidade">%</span>`;
+      document.getElementById('umid-atual').className         = `valor-atual ${s !== 'ok' ? s : ''}`;
+      document.getElementById('card-umid').className          = `sensor-card ${s !== 'ok' ? s : ''}`;
+      document.getElementById('umid-barra').style.width       = pct(u, UMIN, UMAX) + '%';
+      document.getElementById('umid-barra').className         = `progress-bar-fill ${s !== 'ok' ? s : ''}`;
       document.getElementById('umid-barra-label').textContent = u.toFixed(1) + '%';
     }
 
