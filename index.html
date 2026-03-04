@@ -261,7 +261,6 @@
           Documento oficial gerado automaticamente pela planilha de registro. Formato padronizado para <strong>arquivamento</strong> e apresentação a autoridades sanitárias em caso de fiscalização ou auditoria.
         </p>
 
-        <!-- Aviso de um mês por vez -->
         <div class="info-mes">
           📋 <span>Gerado <strong>um mês por vez</strong>. Selecione datas dentro do mesmo mês.<br>Para múltiplos meses, gere um relatório por período.</span>
         </div>
@@ -317,13 +316,11 @@ window.onload = () => {
   const seteDias    = new Date(); seteDias.setDate(seteDias.getDate() - 7);
   const primeiroDia = fmt(new Date(hoje.getFullYear(), hoje.getMonth(), 1));
 
-  // Relatório Analítico — padrão: últimos 7 dias
   document.getElementById('data-inicio').max   = hojeStr;
   document.getElementById('data-fim').max      = hojeStr;
   document.getElementById('data-inicio').value = fmt(seteDias);
   document.getElementById('data-fim').value    = hojeStr;
 
-  // Relatório Oficial ANVISA — padrão: primeiro dia do mês até hoje
   document.getElementById('anvisa-inicio').max   = hojeStr;
   document.getElementById('anvisa-fim').max      = hojeStr;
   document.getElementById('anvisa-inicio').value = primeiroDia;
@@ -347,7 +344,9 @@ function gerarRelatorio() {
 }
 
 // ============================================================
-// RELATÓRIO OFICIAL ANVISA — via JSONP, um mês por vez
+// RELATÓRIO OFICIAL ANVISA
+// Abre o Apps Script direto — ele redireciona para o PDF.
+// Muito mais rápido que JSONP.
 // ============================================================
 function baixarRelatorioOficial() {
   const ini = document.getElementById('anvisa-inicio').value;
@@ -358,7 +357,6 @@ function baixarRelatorioOficial() {
     return;
   }
 
-  // Validação: apenas datas do mesmo mês
   const [anoI, mesI] = ini.split('-');
   const [anoF, mesF] = fim.split('-');
   if (anoI !== anoF || mesI !== mesF) {
@@ -366,41 +364,8 @@ function baixarRelatorioOficial() {
     return;
   }
 
-  const btn = document.getElementById('btn-anvisa');
-  btn.innerHTML        = '⏳ Gerando PDF...';
-  btn.disabled         = true;
-  btn.style.background = '#546e7a';
-
-  const cbName = 'jsonpCb_' + Date.now();
-
-  const timeout = setTimeout(() => {
-    delete window[cbName];
-    document.getElementById('jsonp-script')?.remove();
-    btn.innerHTML        = '📄 Baixar Relatório Oficial PDF';
-    btn.disabled         = false;
-    btn.style.background = '#1565c0';
-    alert('Tempo esgotado. Verifique se o Apps Script está implantado corretamente.');
-  }, 10000);
-
-  window[cbName] = function(json) {
-    clearTimeout(timeout);
-    delete window[cbName];
-    document.getElementById('jsonp-script')?.remove();
-    btn.innerHTML        = '📄 Baixar Relatório Oficial PDF';
-    btn.disabled         = false;
-    btn.style.background = '#1565c0';
-
-    if (json.ok) {
-      window.open(json.url, '_blank');
-    } else {
-      alert('Erro: ' + json.erro);
-    }
-  };
-
-  const script = document.createElement('script');
-  script.id  = 'jsonp-script';
-  script.src = APPS_SCRIPT_URL + '?acao=pdf&inicio=' + ini + '&fim=' + fim + '&callback=' + cbName;
-  document.body.appendChild(script);
+  // Abre o Apps Script direto — ele redireciona para o PDF automaticamente
+  window.open(APPS_SCRIPT_URL + '?acao=pdf&inicio=' + ini + '&fim=' + fim, '_blank');
 }
 
 // ============================================================
