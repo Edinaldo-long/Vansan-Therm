@@ -84,6 +84,8 @@
     text-align:center;
     position:relative;
     cursor:help;
+    /* Garante que não corta nada internamente */
+    overflow:visible;
   }
   .resumo-card::before {
     content:''; position:absolute; top:0; left:0; right:0;
@@ -106,7 +108,7 @@
     letter-spacing:.02em;
   }
 
-  /* ─── ESCALA DE AMPLITUDE ─── (melhorada) */
+  /* ─── ESCALA DE AMPLITUDE ─── */
   .amp-escala {
     display:flex;
     flex-direction:column;
@@ -136,7 +138,6 @@
   .amp-tag.alerta  { background:#fff8e1; color:#e65100; }
   .amp-tag.critico { background:#ffebee; color:#c62828; }
 
-  /* estado ativo — fica destacado */
   .amp-tag.ativo {
     opacity:1;
     transform:scale(1.03);
@@ -144,46 +145,33 @@
     outline-offset:1px;
   }
 
-  /* ─── TOOLTIP ─── */
-  .tooltip {
-    visibility:hidden; opacity:0;
-    position:absolute;
-    top:calc(100% + 12px);
-    left:50%;
-    transform:translateX(-50%);
-    background:#1a2a1a; color:#fff;
-    font-family:'DM Mono',monospace; font-size:.72rem;
-    line-height:1.6; padding:10px 14px; border-radius:10px;
-    width:230px; text-align:left;
-    z-index:9999;
-    box-shadow:0 4px 16px rgba(0,0,0,.35);
-    transition:opacity .2s, visibility .2s;
-    pointer-events:none;
+  /* ─── TOOLTIP GLOBAL (position:fixed — sem clipping) ─── */
+  .tooltip-box {
+    visibility: hidden;
+    opacity: 0;
+    position: fixed;
+    background: #1a2a1a;
+    color: #fff;
+    font-family: 'DM Mono', monospace;
+    font-size: .72rem;
+    line-height: 1.6;
+    padding: 10px 14px;
+    border-radius: 10px;
+    width: 230px;
+    max-width: calc(100vw - 24px);
+    text-align: left;
+    z-index: 9999;
+    box-shadow: 0 4px 16px rgba(0,0,0,.35);
+    transition: opacity .2s, visibility .2s;
+    pointer-events: none;
   }
-  .tooltip::after {
-    content:''; position:absolute;
-    bottom:100%; left:50%;
-    transform:translateX(-50%);
-    border:6px solid transparent;
-    border-bottom-color:#1a2a1a;
-  }
-
-  .resumo-card.tooltip-right .tooltip {
-    top:50%;
-    left:auto;
-    right:calc(100% + 12px);
-    transform:translateY(-50%);
-  }
-  .resumo-card.tooltip-right .tooltip::after {
-    bottom:auto;
-    top:50%;
-    left:100%;
-    transform:translateY(-50%);
-    border-bottom-color:transparent;
-    border-left-color:#1a2a1a;
+  .tooltip-box.visivel {
+    visibility: visible;
+    opacity: 1;
   }
 
-  .resumo-card:hover .tooltip { visibility:visible; opacity:1; }
+  /* Esconde os tooltips inline antigos — usados só como fonte de texto */
+  .tooltip { display: none !important; }
 
   .estado { padding:2.5rem; text-align:center; color:var(--text-muted); font-family:'DM Mono',monospace; }
   .loading { font-family:'DM Mono',monospace; font-size:1.2rem; color:var(--text-muted); animation:blink 1s infinite; }
@@ -195,23 +183,13 @@
     header, footer, .btn-imprimir, .btn-voltar { display:none !important; }
     body { background:#fff; }
     main { padding:0; max-width:100%; }
-    .tooltip { display:none !important; }
+    .tooltip-box { display:none !important; }
   }
+
   @media (max-width:700px) {
     .resumo-grid { grid-template-columns:1fr 1fr; }
-    .header-logo { height:44px; }
+    .header-logo-img { height:44px; }
     .header-title { display:none; }
-    .resumo-card.tooltip-right .tooltip {
-      right:auto; left:50%;
-      bottom:calc(100% + 12px);
-      transform:translateX(-50%);
-    }
-    .resumo-card.tooltip-right .tooltip::after {
-      left:50%; top:100%;
-      transform:translateX(-50%);
-      border-left-color:transparent;
-      border-top-color:#1a2a1a;
-    }
   }
 </style>
 </head>
@@ -242,7 +220,7 @@
   <div class="section-title">Resumo do Período</div>
   <div class="resumo-grid">
 
-    <!-- Card 1 — tooltip abre para baixo -->
+    <!-- Card 1 -->
     <div class="resumo-card" id="card-tmed">
       <div class="tooltip">Média de todas as leituras de temperatura do período. Valores acima de 25°C aceleram reações de degradação química, reduzem a potência de antibióticos e hormônios, e favorecem o crescimento de microrganismos. Abaixo de 15°C podem ocorrer cristalização de soluções e desnaturação de proteínas em biológicos.</div>
       <div class="resumo-label">🌡️ Temp. Média</div>
@@ -251,7 +229,7 @@
       <div class="limite-ref">Limite ANVISA: 15°C – 25°C</div>
     </div>
 
-    <!-- Card 2 — tooltip abre para baixo -->
+    <!-- Card 2 -->
     <div class="resumo-card" id="card-umed">
       <div class="tooltip">Média de todas as leituras de umidade no período. Umidade alta favorece mofo e degradação de cápsulas e comprimidos. Umidade baixa resseca embalagens e pós.</div>
       <div class="resumo-label">💧 Umid. Média</div>
@@ -260,21 +238,20 @@
       <div class="limite-ref">Limite ANVISA: 40% – 70%</div>
     </div>
 
-    <!-- Card 3 — tooltip-right para evitar corte -->
-    <div class="resumo-card tooltip-right" id="card-hfora">
+    <!-- Card 3 -->
+    <div class="resumo-card" id="card-hfora">
       <div class="tooltip">Quantidade de leituras em que temperatura ou umidade estavam fora dos limites ANVISA RDC 301. Cada leitura representa ~5 min de monitoramento.</div>
       <div class="resumo-label">⚠️ Leituras Fora</div>
       <div class="resumo-valor" id="res-hfora"><span class="loading">···</span></div>
       <div class="resumo-status" id="res-hfora-st"></div>
     </div>
 
-    <!-- Card 4 — tooltip-right para evitar corte -->
-    <div class="resumo-card tooltip-right" id="card-amp">
+    <!-- Card 4 -->
+    <div class="resumo-card" id="card-amp">
       <div class="tooltip">Diferença entre a temperatura máxima e mínima registrada no período. Oscilações bruscas aceleram a proliferação de fungos e microrganismos, quebram princípios ativos, comprometem embalagens e podem causar condensação interna em frascos — mesmo que a temperatura média pareça aceitável. Quanto menor a variação, maior a segurança do estoque.</div>
       <div class="resumo-label">📈 Amplitude Térmica</div>
       <div class="resumo-valor" id="res-amp"><span class="loading">···</span></div>
       <div class="resumo-status" id="res-amp-st"></div>
-      <!-- Escala visual melhorada -->
       <div class="amp-escala">
         <div class="amp-tag ok" id="amp-tag-ok">
           <span class="amp-label">✓ Estável</span>
@@ -328,6 +305,9 @@
   Vansan Therm · ANVISA RDC 301 · Laboratório · Responsável: Edinado Santos de Almeida<br>
   Limites ANVISA: Temperatura 15°C – 25°C | Umidade Relativa 40% – 70%
 </footer>
+
+<!-- Tooltip global — renderizado fora de qualquer container com overflow -->
+<div class="tooltip-box" id="tooltip-global"></div>
 
 <script>
 const CHANNEL='3196550', API_KEY='6HM2HMXBNJP32QOC';
@@ -404,7 +384,7 @@ async function carregar(){
     const sf=fora===0?'ok':pctFora>20?'critico':'alerta';
     document.getElementById('res-hfora').innerHTML=`${fora}<span class="resumo-unidade"> / ${feeds.length}</span>`;
     document.getElementById('res-hfora').className=`resumo-valor ${sf!='ok'?sf:''}`;
-    document.getElementById('card-hfora').className=`resumo-card tooltip-right ${sf!='ok'?sf:''}`;
+    document.getElementById('card-hfora').className=`resumo-card ${sf!='ok'?sf:''}`;
     document.getElementById('res-hfora-st').innerHTML=fora===0?'<span style="color:#2e7d32">✓ Nenhuma fora</span>':`<span style="color:${sf==='critico'?'#c62828':'#e65100'}">${pctFora}% das leituras</span>`;
 
     // Amplitude térmica
@@ -412,9 +392,8 @@ async function carregar(){
       const sa=amp<=5?'ok':amp<=8?'alerta':'critico';
       document.getElementById('res-amp').innerHTML=`${amp.toFixed(1)}<span class="resumo-unidade">°C</span>`;
       document.getElementById('res-amp').className=`resumo-valor ${sa!='ok'?sa:''}`;
-      document.getElementById('card-amp').className=`resumo-card tooltip-right ${sa!='ok'?sa:''}`;
+      document.getElementById('card-amp').className=`resumo-card ${sa!='ok'?sa:''}`;
       document.getElementById('res-amp-st').innerHTML=sa==='ok'?'<span style="color:#2e7d32">✓ Estável</span>':sa==='alerta'?'<span style="color:#e65100">⚡ Moderada</span>':'<span style="color:#c62828">⚠ Alta variação</span>';
-      // Destaca a tag ativa na escala
       document.getElementById('amp-tag-ok').classList.toggle('ativo', sa==='ok');
       document.getElementById('amp-tag-alerta').classList.toggle('ativo', sa==='alerta');
       document.getElementById('amp-tag-critico').classList.toggle('ativo', sa==='critico');
@@ -445,6 +424,74 @@ async function carregar(){
 }
 
 carregar();
+
+// ── Tooltip universal — position:fixed, sem clipping ──
+(function() {
+  const tooltipEl = document.getElementById('tooltip-global');
+
+  function esconder() {
+    tooltipEl.classList.remove('visivel');
+  }
+
+  function posicionar(card) {
+    const r   = card.getBoundingClientRect();
+    const tw  = 230;
+    const th  = tooltipEl.offsetHeight || 120; // estimativa antes de renderizar
+    const gap = 10;
+    const vw  = window.innerWidth;
+    const vh  = window.innerHeight;
+
+    // Posição horizontal: centralizado no card, sem vazar nas bordas
+    let left = r.left + r.width / 2 - tw / 2;
+    if (left + tw > vw - 8) left = vw - tw - 8;
+    if (left < 8)           left = 8;
+
+    // Posição vertical: tenta abaixo, se não couber abre acima
+    let top = r.bottom + gap;
+    if (top + th > vh - 8) top = r.top - th - gap;
+    if (top < 8)            top = 8;
+
+    tooltipEl.style.left = left + 'px';
+    tooltipEl.style.top  = top  + 'px';
+  }
+
+  function mostrar(card) {
+    const fonte = card.querySelector('.tooltip');
+    if (!fonte) return;
+    tooltipEl.innerHTML = fonte.innerHTML;
+    // Posiciona antes de mostrar para calcular altura correta
+    tooltipEl.style.visibility = 'hidden';
+    tooltipEl.style.opacity    = '0';
+    tooltipEl.classList.add('visivel');
+    posicionar(card);
+    tooltipEl.style.visibility = '';
+    tooltipEl.style.opacity    = '';
+  }
+
+  document.querySelectorAll('.resumo-card').forEach(card => {
+    // Desktop: hover
+    card.addEventListener('mouseenter', () => mostrar(card));
+    card.addEventListener('mouseleave', esconder);
+
+    // Mobile: tap para abrir/fechar
+    card.addEventListener('touchstart', e => {
+      if (tooltipEl.classList.contains('visivel')) {
+        esconder();
+      } else {
+        mostrar(card);
+        e.preventDefault(); // evita mouseenter duplo em alguns browsers
+      }
+    }, { passive: false });
+  });
+
+  // Toque fora de qualquer card fecha o tooltip
+  document.addEventListener('touchstart', e => {
+    if (!e.target.closest('.resumo-card')) esconder();
+  }, { passive: true });
+
+  // Scroll fecha o tooltip (mobile)
+  window.addEventListener('scroll', esconder, { passive: true });
+})();
 </script>
 </body>
 </html>
