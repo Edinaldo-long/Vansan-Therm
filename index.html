@@ -28,28 +28,49 @@
     background:#0a0a0a; padding:0 1.25rem;
     display:flex; align-items:center; justify-content:space-between;
     height:70px;
-    /* sticky funciona quando html+body NÃO têm overflow:hidden no eixo Y.
-       Com overflow-x:hidden apenas, sticky continua funcional. */
     position:sticky; top:0; z-index:100;
     box-shadow:0 2px 16px rgba(0,0,0,.4);
     border-bottom:2px solid var(--verde-mid);
-    /* Garante que o header sempre preencha a largura da viewport */
     width:100%;
     max-width:100vw;
   }
-  .header-brand { display:flex; align-items:center; gap:10px; min-width:0; }
+  .header-brand { display:flex; align-items:center; gap:10px; min-width:0; flex-shrink:1; overflow:hidden; }
   .header-flame { font-size:1.5rem; line-height:1; }
   .header-divider { width:1px; height:32px; background:rgba(255,255,255,.12); flex-shrink:0; }
   .header-name { display:flex; flex-direction:column; min-width:0; }
   .header-name strong { color:#fff; font-size:1.1rem; font-weight:700; letter-spacing:.03em; line-height:1.2; white-space:nowrap; }
   .header-logo-img { height:52px; width:auto; object-fit:contain; flex-shrink:0; filter:brightness(1.2) drop-shadow(0 0 12px rgba(255,100,0,.7)); }
-  .header-right { display:flex; align-items:center; gap:12px; flex-shrink:0; }
+  .header-right { display:flex; align-items:center; gap:12px; flex-shrink:0; padding-left:10px; }
   .header-title { display:flex; flex-direction:column; align-items:flex-end; }
   .header-title span:first-child { font-size:.7rem; font-weight:700; letter-spacing:.12em; text-transform:uppercase; color:var(--verde-light); }
   .header-title span:last-child { font-family:'DM Mono',monospace; font-size:.65rem; color:rgba(255,255,255,.5); }
   .status-badge { display:flex; align-items:center; gap:6px; background:rgba(76,175,80,.15); border:1px solid rgba(76,175,80,.3); border-radius:20px; padding:5px 12px; font-family:'DM Mono',monospace; font-size:.72rem; color:var(--verde-light); white-space:nowrap; }
   .dot { width:7px; height:7px; border-radius:50%; background:var(--verde-light); animation:pulse 2s infinite; flex-shrink:0; }
   @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.4;transform:scale(.7)} }
+
+  /* ── Mobile: header em duas linhas para caber tudo ── */
+  /* Por padrão (desktop): linha 2 oculta */
+  .header-row-top { display:flex; align-items:center; justify-content:space-between; width:100%; }
+  .header-row-bottom { display:none; }
+
+  @media (max-width:600px) {
+    header {
+      height:auto;
+      flex-direction:column;
+      align-items:stretch;
+      padding:8px 1rem;
+      gap:6px;
+    }
+    .header-row-top { justify-content:flex-start; }
+    .header-right-desktop { display:none; } /* esconde badge/título do desktop */
+    .header-row-bottom { display:flex; align-items:center; justify-content:flex-end; }
+    .header-brand { gap:8px; }
+    .header-logo-img { height:36px; }
+    .header-name strong { font-size:.95rem; }
+    .header-divider { height:24px; }
+    .header-title { display:none; }
+    .status-badge { font-size:.65rem; padding:4px 10px; }
+  }
 
   /* ── main usa padding seguro para não vazar ── */
   main { max-width:1100px; margin:0 auto; padding:2rem 1rem; display:grid; gap:1.5rem; width:100%; }
@@ -128,9 +149,10 @@
     .cards-grid { grid-template-columns:1fr; gap:.75rem; }
     .graficos-grid { grid-template-columns:1fr; }
     .grafico-item:first-child { border-right:none; border-bottom:1px solid var(--border); }
-    .header-name small { display:none; }
     .header-title { display:none; }
-    /* garante que o badge "AO VIVO" não estoure */
+    /* Esconde nome e divisor — logo + badge ficam limpos sem sobreposição */
+    .header-name { display:none; }
+    .header-divider { display:none; }
     .status-badge { font-size:.65rem; padding:4px 10px; }
   }
 </style>
@@ -138,20 +160,28 @@
 <body>
 
 <header>
-  <div class="header-brand">
-    <img src="logo.png" alt="Vansan Therm" class="header-logo-img"
-      onerror="this.style.display='none';document.getElementById('flame-fallback').style.display='inline'">
-    <span id="flame-fallback" style="display:none;font-size:1.5rem;line-height:1;">🔥</span>
-    <div class="header-divider"></div>
-    <div class="header-name">
-      <strong>Vansan Therm</strong>
+  <!-- Linha 1: marca sempre visível -->
+  <div class="header-row-top">
+    <div class="header-brand">
+      <img src="logo.png" alt="Vansan Therm" class="header-logo-img"
+        onerror="this.style.display='none';document.getElementById('flame-fallback').style.display='inline'">
+      <span id="flame-fallback" style="display:none;font-size:1.5rem;line-height:1;">🔥</span>
+      <div class="header-divider"></div>
+      <div class="header-name">
+        <strong>Vansan Therm</strong>
+      </div>
+    </div>
+    <!-- Desktop: badge fica na linha 1 à direita -->
+    <div class="header-right header-right-desktop">
+      <div class="header-title">
+        <span>Monitor Laboratorial</span>
+        <span id="ultima-atualizacao">Carregando...</span>
+      </div>
+      <div class="status-badge"><div class="dot"></div>AO VIVO</div>
     </div>
   </div>
-  <div class="header-right">
-    <div class="header-title">
-      <span>Monitor Laboratorial</span>
-      <span id="ultima-atualizacao">Carregando...</span>
-    </div>
+  <!-- Linha 2: só aparece no mobile -->
+  <div class="header-row-bottom">
     <div class="status-badge"><div class="dot"></div>AO VIVO</div>
   </div>
 </header>
