@@ -153,9 +153,10 @@
   .loading { font-family:'DM Mono',monospace; font-size:1.2rem; color:var(--text-muted); animation:blink 1s infinite; }
   @keyframes blink { 0%,100%{opacity:1} 50%{opacity:.3} }
 
-  /* ── MOBILE ── */
+  /* ── MOBILE portrait ── */
   @media (max-width:700px) {
-    .header-logo-img { height:34px; }
+    header { height:72px; }
+    .header-logo-img { height:36px; }
     .header-name strong { font-size:.85rem; }
     .header-name small  { font-size:.55rem; display:block; }
     .header-title { display:none; }
@@ -169,9 +170,10 @@
 
   /* ── telas muito pequenas (< 420px) ── */
   @media (max-width:420px) {
-    .header-name strong { font-size:.78rem; }
-    .header-name small  { font-size:.5rem; display:block; }
-    .header-logo-img { height:30px; }
+    header { height:68px; }
+    .header-name strong { font-size:.8rem; }
+    .header-name small  { font-size:.52rem; display:block; }
+    .header-logo-img { height:32px; }
     .status-badge { font-size:.6rem; padding:4px 7px; gap:4px; }
   }
 
@@ -179,6 +181,7 @@
   @media (max-width:340px) {
     .header-name small  { display:none; }
     .header-divider { display:none; }
+    header { height:60px; }
   }
 </style>
 </head>
