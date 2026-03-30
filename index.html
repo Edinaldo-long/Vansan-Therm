@@ -49,7 +49,10 @@
     background:rgba(255,255,255,.18);
     flex-shrink:0;
   }
-  .header-name { display:flex; flex-direction:column; justify-content:center; min-width:0; flex-shrink:1; overflow:hidden; }
+  .header-name {
+    display:flex; flex-direction:column; justify-content:center;
+    min-width:0; flex-shrink:1; overflow:hidden;
+  }
   .header-name strong {
     color:#fff; font-size:1rem; font-weight:700;
     letter-spacing:.02em; line-height:1.2;
@@ -78,9 +81,6 @@
   }
   .dot { width:7px; height:7px; border-radius:50%; background:var(--verde-light); animation:pulse 2s infinite; flex-shrink:0; }
   @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.4;transform:scale(.7)} }
-
-  .header-row-top { display:contents; }
-  .header-row-bottom { display:none; }
 
   /* ── main ── */
   main { max-width:1100px; margin:0 auto; padding:2rem 1rem; display:grid; gap:1.5rem; width:100%; }
@@ -153,14 +153,34 @@
   .loading { font-family:'DM Mono',monospace; font-size:1.2rem; color:var(--text-muted); animation:blink 1s infinite; }
   @keyframes blink { 0%,100%{opacity:1} 50%{opacity:.3} }
 
-  /* ── MOBILE portrait ── */
+  /* ══════════════════════════════════
+     MOBILE portrait — CORREÇÃO PRINCIPAL
+     Garante que "Monitoramento Inteligente"
+     nunca desapareça em modo retrato
+  ══════════════════════════════════ */
   @media (max-width:700px) {
     header { height:72px; }
-    .header-logo-img { height:36px; }
-    .header-name strong { font-size:.85rem; }
-    .header-name small  { font-size:.55rem; display:block; }
+    .header-logo-img { height:34px; }
+
+    /* brand ocupa o máximo possível */
+    .header-brand { flex:1; min-width:0; }
+
+    /* nome sempre visível */
+    .header-name { min-width:0; }
+    .header-name strong { font-size:.82rem; }
+    .header-name small  { font-size:.54rem; display:block !important; }
+
+    /* oculta o bloco "Monitor Laboratorial / hora" para dar espaço */
     .header-title { display:none; }
-    .status-badge { font-size:.65rem; padding:4px 9px; }
+
+    /* badge compacto mas legível */
+    .status-badge {
+      font-size:.62rem;
+      padding:4px 8px;
+      gap:4px;
+      flex-shrink:0;
+    }
+    /* esconde o texto "AO VIVO" no badge, mantém só o dot em telas muito apertadas */
 
     main { padding:1rem .75rem; gap:1rem; }
     .cards-grid { grid-template-columns:1fr; gap:.75rem; }
@@ -171,17 +191,17 @@
   /* ── telas muito pequenas (< 420px) ── */
   @media (max-width:420px) {
     header { height:68px; }
-    .header-name strong { font-size:.8rem; }
-    .header-name small  { font-size:.52rem; display:block; }
-    .header-logo-img { height:32px; }
-    .status-badge { font-size:.6rem; padding:4px 7px; gap:4px; }
+    .header-logo-img { height:30px; }
+    .header-name strong { font-size:.78rem; }
+    .header-name small  { font-size:.52rem; display:block !important; }
+    .status-badge { font-size:.58rem; padding:4px 7px; gap:3px; }
   }
 
   /* ── telas minúsculas (< 340px) ── */
   @media (max-width:340px) {
-    .header-name small  { display:none; }
-    .header-divider { display:none; }
     header { height:60px; }
+    .header-name small  { display:none !important; }
+    .header-divider { display:none; }
   }
 </style>
 </head>
