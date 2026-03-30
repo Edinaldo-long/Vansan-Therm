@@ -13,37 +13,76 @@
     --text-muted: #5a7a5a; --border: #c8dcc8;
   }
   * { margin:0; padding:0; box-sizing:border-box; }
-
-  /* ── FIX PRINCIPAL: impede qualquer elemento de vazar além da viewport ── */
   html { overflow-x: hidden; }
   body {
     font-family:'Syne',sans-serif; background:var(--bg); color:var(--text);
-    min-height:100vh;
-    overflow-x: hidden;
+    min-height:100vh; overflow-x: hidden;
   }
 
+  /* ══════════════════════════════════
+     HEADER — logo + nome + tagline + botão
+     sempre em UMA linha, sem display:none no nome
+  ══════════════════════════════════ */
   header {
-    background:#0a0a0a; padding:0 1.25rem;
-    display:flex; align-items:center; justify-content:space-between;
-    height:70px;
+    background:#0a0a0a;
+    padding:0 1rem;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    height:64px;
     position:sticky; top:0; z-index:100;
     box-shadow:0 2px 16px rgba(0,0,0,.4);
     border-bottom:2px solid var(--verde-mid);
-    width:100%;
-    max-width:100vw;
+    width:100%; max-width:100vw;
+    gap:8px;
   }
-  .header-brand { display:flex; align-items:center; gap:10px; min-width:0; overflow:hidden; }
-  .header-divider { width:1px; height:32px; background:rgba(255,255,255,.12); flex-shrink:0; }
-  .header-name { display:flex; flex-direction:column; min-width:0; overflow:hidden; }
-  .header-name strong { color:#fff; font-size:1.1rem; font-weight:700; letter-spacing:.03em; line-height:1.2; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-  .header-logo-img { height:52px; width:auto; object-fit:contain; flex-shrink:0; filter:brightness(1.2) drop-shadow(0 0 12px rgba(255,100,0,.7)); }
-  .header-right { display:flex; align-items:center; gap:12px; flex-shrink:0; margin-left:auto; padding-left:10px; }
+  .header-brand {
+    display:flex; align-items:center; gap:8px;
+    flex:1; min-width:0; overflow:hidden;
+  }
+  .header-logo-img {
+    height:40px; width:auto; object-fit:contain; flex-shrink:0;
+    filter:brightness(1.2) drop-shadow(0 0 10px rgba(255,100,0,.7));
+  }
+  .header-divider {
+    width:1px; height:28px;
+    background:rgba(255,255,255,.18); flex-shrink:0;
+  }
+  .header-name {
+    display:flex; flex-direction:column; min-width:0; flex-shrink:1;
+  }
+  .header-name strong {
+    color:#fff; font-size:1rem; font-weight:700;
+    letter-spacing:.02em; line-height:1.15;
+    white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+  }
+  .header-name small {
+    color:var(--verde-light); font-size:.58rem; font-weight:600;
+    letter-spacing:.07em; text-transform:uppercase;
+    white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+  }
+  .header-right {
+    display:flex; align-items:center; gap:10px; flex-shrink:0;
+  }
   .header-title { display:flex; flex-direction:column; align-items:flex-end; }
-  .header-title span:first-child { font-size:.7rem; font-weight:700; letter-spacing:.12em; text-transform:uppercase; color:var(--verde-light); }
-  .header-title span:last-child { font-family:'DM Mono',monospace; font-size:.65rem; color:rgba(255,255,255,.5); }
-  .btn-voltar { display:flex; align-items:center; gap:6px; padding:5px 12px; background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.18); border-radius:20px; color:rgba(255,255,255,.75); font-family:'DM Mono',monospace; font-size:.72rem; text-decoration:none; transition:all .15s; white-space:nowrap; flex-shrink:0; }
+  .header-title span:first-child {
+    font-size:.65rem; font-weight:700; letter-spacing:.1em;
+    text-transform:uppercase; color:var(--verde-light);
+  }
+  .header-title span:last-child {
+    font-family:'DM Mono',monospace; font-size:.6rem; color:rgba(255,255,255,.45);
+  }
+  .btn-voltar {
+    display:flex; align-items:center; gap:6px; padding:5px 12px;
+    background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.18);
+    border-radius:20px; color:rgba(255,255,255,.75);
+    font-family:'DM Mono',monospace; font-size:.72rem;
+    text-decoration:none; transition:all .15s;
+    white-space:nowrap; flex-shrink:0;
+  }
   .btn-voltar:hover { background:rgba(255,255,255,.18); color:#fff; }
 
+  /* ── main ── */
   main { max-width:1200px; margin:0 auto; padding:2rem 1rem; display:grid; gap:1.5rem; width:100%; }
 
   .section-title { font-size:.7rem; font-weight:700; letter-spacing:.12em; text-transform:uppercase; color:var(--text-muted); display:flex; align-items:center; gap:8px; }
@@ -66,7 +105,6 @@
   }
   .btn-imprimir:hover { background:var(--verde); }
 
-  /* ── Tabela com scroll interno — não vaza ── */
   .historico-scroll { overflow-x:auto; -webkit-overflow-scrolling:touch; }
   table { width:100%; border-collapse:collapse; font-size:.84rem; }
   thead th { background:var(--verde); color:#fff; padding:10px 14px; text-align:center; font-size:.7rem; font-weight:700; letter-spacing:.06em; text-transform:uppercase; }
@@ -85,17 +123,11 @@
     gap:1rem;
     margin-bottom:1.5rem;
   }
-
   .resumo-card {
-    background:var(--card);
-    border:2px solid var(--border);
-    border-radius:16px;
-    padding:1.2rem .75rem 1rem;
-    text-align:center;
-    position:relative;
-    cursor:help;
-    overflow:visible;
-    min-width:0;
+    background:var(--card); border:2px solid var(--border);
+    border-radius:16px; padding:1.2rem .75rem 1rem;
+    text-align:center; position:relative;
+    cursor:help; overflow:visible; min-width:0;
   }
   .resumo-card::before {
     content:''; position:absolute; top:0; left:0; right:0;
@@ -109,37 +141,19 @@
   .resumo-valor.alerta  { color:var(--amarelo); }
   .resumo-valor.critico { color:var(--vermelho); }
   .resumo-status { font-size:.65rem; font-weight:700; letter-spacing:.04em; margin-top:4px; }
-
-  .limite-ref {
-    margin-top:8px;
-    font-family:'DM Mono',monospace;
-    font-size:.62rem;
-    color:var(--text-muted);
-    letter-spacing:.02em;
-  }
+  .limite-ref { margin-top:8px; font-family:'DM Mono',monospace; font-size:.62rem; color:var(--text-muted); letter-spacing:.02em; }
 
   /* ─── ESCALA DE AMPLITUDE ─── */
   .amp-escala {
-    display:flex;
-    flex-direction:column;
-    gap:4px;
-    margin-top:10px;
-    padding:8px;
-    background:#f5f9f5;
-    border-radius:10px;
-    border:1px solid var(--border);
+    display:flex; flex-direction:column; gap:4px;
+    margin-top:10px; padding:8px;
+    background:#f5f9f5; border-radius:10px; border:1px solid var(--border);
   }
   .amp-tag {
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    font-size:.65rem;
-    font-weight:700;
-    padding:4px 8px;
-    border-radius:6px;
-    letter-spacing:.02em;
-    opacity:.55;
-    transition:opacity .2s, transform .2s;
+    display:flex; align-items:center; justify-content:space-between;
+    font-size:.65rem; font-weight:700; padding:4px 8px;
+    border-radius:6px; letter-spacing:.02em;
+    opacity:.55; transition:opacity .2s, transform .2s;
   }
   .amp-tag .amp-label { flex:1; text-align:left; }
   .amp-tag .amp-range { font-family:'DM Mono',monospace; font-size:.62rem; opacity:.85; }
@@ -148,25 +162,16 @@
   .amp-tag.critico { background:#ffebee; color:#c62828; }
   .amp-tag.ativo { opacity:1; transform:scale(1.03); outline:2px solid currentColor; outline-offset:1px; }
 
-  /* ─── TOOLTIP GLOBAL (position:fixed — sem clipping) ─── */
+  /* ─── TOOLTIP ─── */
   .tooltip-box {
-    visibility: hidden;
-    opacity: 0;
-    position: fixed;
-    background: #1a2a1a;
-    color: #fff;
-    font-family: 'DM Mono', monospace;
-    font-size: .72rem;
-    line-height: 1.6;
-    padding: 10px 14px;
-    border-radius: 10px;
-    width: 230px;
-    max-width: calc(100vw - 24px);
-    text-align: left;
-    z-index: 9999;
+    visibility: hidden; opacity: 0;
+    position: fixed; background: #1a2a1a; color: #fff;
+    font-family: 'DM Mono', monospace; font-size: .72rem;
+    line-height: 1.6; padding: 10px 14px; border-radius: 10px;
+    width: 230px; max-width: calc(100vw - 24px);
+    text-align: left; z-index: 9999;
     box-shadow: 0 4px 16px rgba(0,0,0,.35);
-    transition: opacity .2s, visibility .2s;
-    pointer-events: none;
+    transition: opacity .2s, visibility .2s; pointer-events: none;
   }
   .tooltip-box.visivel { visibility: visible; opacity: 1; }
   .tooltip { display: none !important; }
@@ -184,13 +189,23 @@
     .tooltip-box { display:none !important; }
   }
 
+  /* ── MOBILE — nome NUNCA some ── */
   @media (max-width:700px) {
     main { padding:1rem .75rem; gap:1rem; }
     .resumo-grid { grid-template-columns:1fr 1fr; gap:.75rem; }
+    /* título do header (Histórico / período) some, mas nome fica */
     .header-title { display:none; }
-    /* Esconde nome e divisor — logo + botão ficam limpos e sem sobreposição */
-    .header-name { display:none; }
+    .header-logo-img { height:34px; }
+    .header-name strong { font-size:.88rem; }
+    .header-name small  { font-size:.52rem; }
+    .btn-voltar { font-size:.65rem; padding:4px 9px; }
+  }
+
+  @media (max-width:380px) {
+    .header-name strong { font-size:.75rem; }
+    .header-name small  { display:none; }
     .header-divider { display:none; }
+    .btn-voltar { font-size:.6rem; padding:4px 7px; }
   }
 </style>
 </head>
@@ -200,10 +215,11 @@
   <div class="header-brand">
     <img src="logo.png" alt="Vansan Therm" class="header-logo-img"
       onerror="this.style.display='none';document.getElementById('flame-fallback').style.display='inline'">
-    <span id="flame-fallback" style="display:none;font-size:1.5rem;line-height:1;">🔥</span>
+    <span id="flame-fallback" style="display:none;font-size:1.4rem;line-height:1;flex-shrink:0;">🔥</span>
     <div class="header-divider"></div>
     <div class="header-name">
       <strong>Vansan Therm</strong>
+      <small>Monitoramento Inteligente</small>
     </div>
   </div>
   <div class="header-right">
@@ -297,7 +313,7 @@
 </main>
 
 <footer>
-  Vansan Therm · ANVISA RDC 301 · Laboratório · Responsável: Edinado Santos de Almeida<br>
+  Vansan Therm · Monitoramento Inteligente · ANVISA RDC 301 · Responsável: Edinado Santos de Almeida<br>
   Limites ANVISA: Temperatura 15°C – 25°C | Umidade Relativa 40% – 70%
 </footer>
 
@@ -413,13 +429,11 @@ async function carregar(){
 
 carregar();
 
-// ── Tooltip universal — position:fixed, sem clipping ──
+// ── Tooltip universal ──
 (function() {
   const tooltipEl = document.getElementById('tooltip-global');
 
-  function esconder() {
-    tooltipEl.classList.remove('visivel');
-  }
+  function esconder() { tooltipEl.classList.remove('visivel'); }
 
   function posicionar(card) {
     const r   = card.getBoundingClientRect();
