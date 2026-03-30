@@ -13,74 +13,50 @@
     --text-muted: #5a7a5a; --border: #c8dcc8;
   }
   * { margin:0; padding:0; box-sizing:border-box; }
-
   html { overflow-x: hidden; }
-  body {
-    font-family:'Syne',sans-serif; background:var(--bg); color:var(--text);
-    min-height:100vh;
-    overflow-x: hidden;
-  }
+  body { font-family:'Syne',sans-serif; background:var(--bg); color:var(--text); min-height:100vh; overflow-x:hidden; }
 
+  /* ══ HEADER desktop ══ */
   header {
     background:#0a0a0a;
     padding:0 1rem;
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
+    display:flex; align-items:center; justify-content:space-between;
     height:64px;
     position:sticky; top:0; z-index:100;
     box-shadow:0 2px 16px rgba(0,0,0,.4);
     border-bottom:2px solid var(--verde-mid);
-    width:100%;
-    max-width:100vw;
-    gap:8px;
+    width:100%; max-width:100vw; gap:8px;
   }
-  .header-brand {
-    display:flex; align-items:center; gap:8px;
-    flex:1; min-width:0; overflow:hidden;
-  }
-  .header-logo-img {
-    height:40px; width:auto; object-fit:contain;
-    flex-shrink:0;
-    filter:brightness(1.2) drop-shadow(0 0 10px rgba(255,100,0,.7));
-  }
-  .header-divider {
-    width:1px; height:28px;
-    background:rgba(255,255,255,.18);
-    flex-shrink:0;
-  }
-  .header-name {
-    display:flex; flex-direction:column; justify-content:center;
-    min-width:0; flex-shrink:1; overflow:hidden;
-  }
-  .header-name strong {
-    color:#fff; font-size:1rem; font-weight:700;
-    letter-spacing:.02em; line-height:1.2;
-    white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
-    display:block;
-  }
-  .header-name small {
-    color:var(--verde-light); font-size:.6rem; font-weight:600;
-    letter-spacing:.06em; text-transform:uppercase;
-    white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
-    display:block; line-height:1.3; margin-top:1px;
-  }
-  .header-right {
-    display:flex; align-items:center; gap:10px;
-    flex-shrink:0;
-  }
+  .header-brand { display:flex; align-items:center; gap:8px; flex:1; min-width:0; overflow:hidden; }
+  .header-logo-img { height:40px; width:auto; object-fit:contain; flex-shrink:0; filter:brightness(1.2) drop-shadow(0 0 10px rgba(255,100,0,.7)); }
+  .header-divider { width:1px; height:28px; background:rgba(255,255,255,.18); flex-shrink:0; }
+  .header-name { display:flex; flex-direction:column; justify-content:center; min-width:0; flex-shrink:1; overflow:hidden; }
+  .header-name strong { color:#fff; font-size:1rem; font-weight:700; letter-spacing:.02em; line-height:1.2; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; display:block; }
+  .header-name small  { color:var(--verde-light); font-size:.6rem; font-weight:600; letter-spacing:.06em; text-transform:uppercase; white-space:nowrap; display:block; line-height:1.3; margin-top:1px; }
+  .header-right { display:flex; align-items:center; gap:10px; flex-shrink:0; }
   .header-title { display:flex; flex-direction:column; align-items:flex-end; }
   .header-title span:first-child { font-size:.65rem; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--verde-light); }
-  .header-title span:last-child { font-family:'DM Mono',monospace; font-size:.6rem; color:rgba(255,255,255,.45); }
-  .status-badge {
-    display:flex; align-items:center; gap:6px;
-    background:rgba(76,175,80,.15); border:1px solid rgba(76,175,80,.3);
-    border-radius:20px; padding:5px 10px;
-    font-family:'DM Mono',monospace; font-size:.7rem;
-    color:var(--verde-light); white-space:nowrap; flex-shrink:0;
-  }
+  .header-title span:last-child  { font-family:'DM Mono',monospace; font-size:.6rem; color:rgba(255,255,255,.45); }
+  .status-badge { display:flex; align-items:center; gap:6px; background:rgba(76,175,80,.15); border:1px solid rgba(76,175,80,.3); border-radius:20px; padding:5px 10px; font-family:'DM Mono',monospace; font-size:.7rem; color:var(--verde-light); white-space:nowrap; flex-shrink:0; }
   .dot { width:7px; height:7px; border-radius:50%; background:var(--verde-light); animation:pulse 2s infinite; flex-shrink:0; }
   @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.4;transform:scale(.7)} }
+
+  /* ══ FAIXA SUBTÍTULO — só aparece no mobile ══ */
+  .header-subtitle-mobile {
+    display:none; /* oculto no desktop */
+    background:#111;
+    border-bottom:1px solid rgba(76,175,80,.3);
+    padding:5px 1rem;
+    font-family:'Syne',sans-serif;
+    font-size:.62rem;
+    font-weight:700;
+    letter-spacing:.1em;
+    text-transform:uppercase;
+    color:var(--verde-light);
+    position:sticky;
+    top:64px; /* fica logo abaixo do header */
+    z-index:99;
+  }
 
   /* ── main ── */
   main { max-width:1100px; margin:0 auto; padding:2rem 1rem; display:grid; gap:1.5rem; width:100%; }
@@ -88,10 +64,10 @@
   .anvisa-banner { background:var(--card); border:2px solid var(--border); border-radius:16px; padding:1rem 1.25rem; display:flex; align-items:center; justify-content:space-between; gap:1rem; flex-wrap:wrap; }
   .anvisa-banner .label { font-size:.68rem; font-weight:700; letter-spacing:.1em; color:var(--text-muted); text-transform:uppercase; margin-bottom:4px; }
   .status-pill { padding:6px 18px; border-radius:20px; font-size:.85rem; font-weight:700; letter-spacing:.04em; }
-  .status-ok     { background:#e8f5e9; color:#1b5e20; border:1.5px solid #4caf50; }
-  .status-alerta { background:#fff8e1; color:#e65100; border:1.5px solid #f9a825; }
-  .status-critico{ background:#ffebee; color:#c62828; border:1.5px solid #ef5350; }
-  .anvisa-limits { font-family:'DM Mono',monospace; font-size:.78rem; color:var(--text-muted); display:flex; gap:1.5rem; flex-wrap:wrap; }
+  .status-ok      { background:#e8f5e9; color:#1b5e20; border:1.5px solid #4caf50; }
+  .status-alerta  { background:#fff8e1; color:#e65100; border:1.5px solid #f9a825; }
+  .status-critico { background:#ffebee; color:#c62828; border:1.5px solid #ef5350; }
+  .anvisa-limits  { font-family:'DM Mono',monospace; font-size:.78rem; color:var(--text-muted); display:flex; gap:1.5rem; flex-wrap:wrap; }
 
   .section-title { font-size:.7rem; font-weight:700; letter-spacing:.12em; text-transform:uppercase; color:var(--text-muted); display:flex; align-items:center; gap:8px; }
   .section-title::after { content:''; flex:1; height:1px; background:var(--border); }
@@ -103,84 +79,62 @@
   .sensor-card.alerta::before  { background:var(--amarelo); }
   .sensor-card.critico::before { background:var(--vermelho); }
   .card-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:1rem; }
-  .card-title { font-size:.7rem; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--text-muted); }
-  .card-icon { font-size:1.4rem; }
+  .card-title  { font-size:.7rem; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--text-muted); }
+  .card-icon   { font-size:1.4rem; }
   .valor-atual { font-family:'DM Mono',monospace; font-size:clamp(2rem,8vw,3.5rem); font-weight:500; color:var(--verde); line-height:1; margin-bottom:.5rem; }
   .valor-atual.alerta  { color:#e65100; }
   .valor-atual.critico { color:var(--vermelho); }
   .valor-unidade { font-size:clamp(1rem,4vw,1.5rem); font-weight:400; color:var(--text-muted); }
-  .progress-bar-wrap { margin-top:1rem; }
+  .progress-bar-wrap  { margin-top:1rem; }
   .progress-bar-label { display:flex; justify-content:space-between; font-size:.6rem; color:var(--text-muted); margin-bottom:4px; font-family:'DM Mono',monospace; }
-  .progress-bar-bg { height:6px; background:var(--verde-pale); border-radius:3px; overflow:hidden; }
-  .progress-bar-fill { height:100%; border-radius:3px; background:var(--verde-mid); transition:width .8s ease; }
+  .progress-bar-bg    { height:6px; background:var(--verde-pale); border-radius:3px; overflow:hidden; }
+  .progress-bar-fill  { height:100%; border-radius:3px; background:var(--verde-mid); transition:width .8s ease; }
   .progress-bar-fill.alerta  { background:var(--amarelo); }
   .progress-bar-fill.critico { background:var(--vermelho); }
-  .minmax-row { display:flex; gap:.5rem; margin-top:1rem; padding-top:1rem; border-top:1px solid var(--border); }
+  .minmax-row  { display:flex; gap:.5rem; margin-top:1rem; padding-top:1rem; border-top:1px solid var(--border); }
   .minmax-item { flex:1; text-align:center; min-width:0; }
   .minmax-label { font-size:.58rem; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:var(--text-muted); margin-bottom:2px; }
   .minmax-valor { font-family:'DM Mono',monospace; font-size:clamp(.85rem,3vw,1.1rem); font-weight:500; }
 
-  .graficos-card { background:var(--card); border:2px solid var(--border); border-radius:16px; overflow:hidden; }
+  .graficos-card    { background:var(--card); border:2px solid var(--border); border-radius:16px; overflow:hidden; }
   .graficos-toolbar { padding:1rem 1.25rem; border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:.75rem; background:#fafcfa; }
   .graficos-toolbar h3 { font-size:.72rem; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--text-muted); }
   .periodo-btns { display:flex; gap:6px; flex-wrap:wrap; }
-  .periodo-btn { padding:5px 12px; border-radius:20px; border:1.5px solid var(--border); background:#fff; font-family:'Syne',sans-serif; font-size:.75rem; font-weight:600; color:var(--text-muted); cursor:pointer; transition:all .15s; }
+  .periodo-btn  { padding:5px 12px; border-radius:20px; border:1.5px solid var(--border); background:#fff; font-family:'Syne',sans-serif; font-size:.75rem; font-weight:600; color:var(--text-muted); cursor:pointer; transition:all .15s; }
   .periodo-btn:hover { border-color:var(--verde-mid); color:var(--verde-mid); }
   .periodo-btn.ativo { background:var(--verde-mid); border-color:var(--verde-mid); color:#fff; }
   .graficos-grid { display:grid; grid-template-columns:1fr 1fr; }
-  .grafico-item { padding:1rem 1.25rem 1.5rem; min-width:0; }
+  .grafico-item  { padding:1rem 1.25rem 1.5rem; min-width:0; }
   .grafico-item:first-child { border-right:1px solid var(--border); }
   .grafico-item h4 { font-size:.72rem; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:var(--text-muted); margin-bottom:.75rem; }
   .grafico-item iframe { width:100%; height:250px; border:none; border-radius:8px; display:block; }
 
-  .relatorio-date-input {
-    width:100%; padding:10px 14px;
-    border:2px solid var(--border); border-radius:12px;
-    font-family:'DM Mono',monospace; font-size:.95rem; color:var(--text);
-    background:#fff; outline:none; transition:border-color .2s;
-  }
+  .relatorio-date-input { width:100%; padding:10px 14px; border:2px solid var(--border); border-radius:12px; font-family:'DM Mono',monospace; font-size:.95rem; color:var(--text); background:#fff; outline:none; transition:border-color .2s; }
   .relatorio-date-input:focus { border-color:var(--verde-mid); }
   .relatorio-date-input.azul:focus { border-color:#1565c0; }
+  .info-mes { display:flex; align-items:flex-start; gap:8px; background:#e3f2fd; border:1.5px solid #90caf9; border-radius:10px; padding:10px 14px; font-family:'DM Mono',monospace; font-size:.73rem; color:#1565c0; line-height:1.5; }
 
-  .info-mes {
-    display:flex; align-items:flex-start; gap:8px;
-    background:#e3f2fd; border:1.5px solid #90caf9; border-radius:10px;
-    padding:10px 14px; font-family:'DM Mono',monospace; font-size:.73rem;
-    color:#1565c0; line-height:1.5;
-  }
-
-  footer { text-align:center; padding:2rem; font-size:.72rem; color:var(--text-muted); font-family:'DM Mono',monospace; }
+  footer  { text-align:center; padding:2rem; font-size:.72rem; color:var(--text-muted); font-family:'DM Mono',monospace; }
   .loading { font-family:'DM Mono',monospace; font-size:1.2rem; color:var(--text-muted); animation:blink 1s infinite; }
   @keyframes blink { 0%,100%{opacity:1} 50%{opacity:.3} }
 
   /* ══════════════════════════════════
-     MOBILE portrait — CORREÇÃO PRINCIPAL
-     Garante que "Monitoramento Inteligente"
-     nunca desapareça em modo retrato
+     MOBILE — faixa subtítulo visível
   ══════════════════════════════════ */
   @media (max-width:700px) {
-    header { height:72px; }
-    .header-logo-img { height:34px; }
-
-    /* brand ocupa o máximo possível */
-    .header-brand { flex:1; min-width:0; }
-
-    /* nome sempre visível */
-    .header-name { min-width:0; }
-    .header-name strong { font-size:.82rem; }
-    .header-name small  { font-size:.54rem; display:block !important; }
-
-    /* oculta o bloco "Monitor Laboratorial / hora" para dar espaço */
+    header { height:56px; padding:0 .75rem; }
+    .header-logo-img { height:32px; }
+    .header-divider  { display:none; }
+    .header-name small { display:none; }        /* some do header... */
+    .header-name strong { font-size:.9rem; }
     .header-title { display:none; }
+    .status-badge { font-size:.62rem; padding:4px 9px; gap:4px; }
 
-    /* badge compacto mas legível */
-    .status-badge {
-      font-size:.62rem;
-      padding:4px 8px;
-      gap:4px;
-      flex-shrink:0;
+    /* ...e aparece na faixa separada */
+    .header-subtitle-mobile {
+      display:block;
+      top:56px;
     }
-    /* esconde o texto "AO VIVO" no badge, mantém só o dot em telas muito apertadas */
 
     main { padding:1rem .75rem; gap:1rem; }
     .cards-grid { grid-template-columns:1fr; gap:.75rem; }
@@ -188,20 +142,17 @@
     .grafico-item:first-child { border-right:none; border-bottom:1px solid var(--border); }
   }
 
-  /* ── telas muito pequenas (< 420px) ── */
   @media (max-width:420px) {
-    header { height:68px; }
-    .header-logo-img { height:30px; }
-    .header-name strong { font-size:.78rem; }
-    .header-name small  { font-size:.52rem; display:block !important; }
-    .status-badge { font-size:.58rem; padding:4px 7px; gap:3px; }
+    header { height:52px; }
+    .header-logo-img { height:28px; }
+    .header-name strong { font-size:.82rem; }
+    .status-badge { font-size:.58rem; padding:3px 8px; }
+    .header-subtitle-mobile { top:52px; font-size:.58rem; padding:4px 1rem; }
   }
 
-  /* ── telas minúsculas (< 340px) ── */
   @media (max-width:340px) {
-    header { height:60px; }
-    .header-name small  { display:none !important; }
-    .header-divider { display:none; }
+    header { height:48px; }
+    .header-subtitle-mobile { display:none; }
   }
 </style>
 </head>
@@ -226,6 +177,9 @@
     <div class="status-badge"><div class="dot"></div>AO VIVO</div>
   </div>
 </header>
+
+<!-- Faixa de subtítulo visível APENAS no mobile -->
+<div class="header-subtitle-mobile">🔥&nbsp;&nbsp;Monitoramento Inteligente</div>
 
 <main>
 
@@ -275,7 +229,6 @@
     </div>
   </div>
 
-  <!-- THINGSPEAK -->
   <div class="section-title">Gráficos Históricos</div>
   <div class="graficos-card">
     <div class="graficos-toolbar">
@@ -300,7 +253,6 @@
     </div>
   </div>
 
-  <!-- GRAFANA -->
   <div class="section-title">Dashboards Grafana</div>
   <div class="graficos-card">
     <div class="graficos-toolbar">
@@ -311,7 +263,7 @@
         <h4>🌡️ Temperatura</h4>
         <p style="font-family:'DM Mono',monospace;font-size:.75rem;color:var(--text-muted);text-align:center;">Clique para abrir o painel completo de temperatura no Grafana</p>
         <a href="https://esatakeu.grafana.net/public-dashboards/a19310195eec42ffb06b5072b6db2d4f" target="_blank"
-          style="display:inline-flex;align-items:center;gap:8px;padding:10px 20px;background:var(--verde-mid);color:#fff;border-radius:20px;text-decoration:none;font-family:'Syne',sans-serif;font-weight:700;font-size:.85rem;transition:background .2s;text-align:center;"
+          style="display:inline-flex;align-items:center;gap:8px;padding:10px 20px;background:var(--verde-mid);color:#fff;border-radius:20px;text-decoration:none;font-family:'Syne',sans-serif;font-weight:700;font-size:.85rem;transition:background .2s;"
           onmouseover="this.style.background='#1b5e20'" onmouseout="this.style.background='#2e7d32'">
           📊 Abrir Painel de Temperatura
         </a>
@@ -320,7 +272,7 @@
         <h4>💧 Umidade Relativa</h4>
         <p style="font-family:'DM Mono',monospace;font-size:.75rem;color:var(--text-muted);text-align:center;">Clique para abrir o painel completo de umidade no Grafana</p>
         <a href="https://esatakeu.grafana.net/public-dashboards/f6bd16c53b45416e92287fd22ccd2a7a" target="_blank"
-          style="display:inline-flex;align-items:center;gap:8px;padding:10px 20px;background:var(--verde-mid);color:#fff;border-radius:20px;text-decoration:none;font-family:'Syne',sans-serif;font-weight:700;font-size:.85rem;transition:background .2s;text-align:center;"
+          style="display:inline-flex;align-items:center;gap:8px;padding:10px 20px;background:var(--verde-mid);color:#fff;border-radius:20px;text-decoration:none;font-family:'Syne',sans-serif;font-weight:700;font-size:.85rem;transition:background .2s;"
           onmouseover="this.style.background='#1b5e20'" onmouseout="this.style.background='#2e7d32'">
           📊 Abrir Painel de Umidade
         </a>
@@ -328,15 +280,12 @@
     </div>
   </div>
 
-  <!-- RELATÓRIOS -->
   <div class="section-title">Relatórios</div>
   <div class="graficos-card">
     <div class="graficos-toolbar">
       <h3>📋 Tipos de Relatório</h3>
     </div>
     <div class="graficos-grid">
-
-      <!-- ANALÍTICO -->
       <div class="grafico-item" style="display:flex;flex-direction:column;gap:1rem;padding:1.5rem 1.25rem 2rem;">
         <h4>📊 Relatório Analítico</h4>
         <p style="font-family:'DM Mono',monospace;font-size:.75rem;color:var(--text-muted);line-height:1.6;">
@@ -356,18 +305,14 @@
           📊 Gerar Relatório Analítico
         </button>
       </div>
-
-      <!-- OFICIAL ANVISA -->
       <div class="grafico-item" style="display:flex;flex-direction:column;gap:1rem;padding:1.5rem 1.25rem 2rem;">
         <h4>📄 Relatório Oficial ANVISA</h4>
         <p style="font-family:'DM Mono',monospace;font-size:.75rem;color:var(--text-muted);line-height:1.6;">
           Documento oficial gerado automaticamente pela planilha de registro. Formato padronizado para <strong>arquivamento</strong> e apresentação a autoridades sanitárias em caso de fiscalização ou auditoria.
         </p>
-
         <div class="info-mes">
           📋 <span>Gerado <strong>um mês por vez</strong>. Selecione datas dentro do mesmo mês.<br>Para múltiplos meses, gere um relatório por período.</span>
         </div>
-
         <div style="display:flex;flex-direction:column;gap:8px;margin-top:.5rem;">
           <label style="font-size:.68rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);">📅 Data Inicial</label>
           <input type="date" id="anvisa-inicio" class="relatorio-date-input azul">
@@ -382,7 +327,6 @@
           📄 Baixar Relatório Oficial PDF
         </button>
       </div>
-
     </div>
   </div>
 
@@ -397,167 +341,114 @@
 const CHANNEL = '3196550';
 const API_KEY = '6HM2HMXBNJP32QOC';
 const TMIN = 15, TMAX = 25, UMIN = 40, UMAX = 70;
-
 const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwkB9CVO63wmkUmtEDGlJ-m8x_u0SFCKE-VSgDxrz8RcPrItt7OeMjrxgJ6f2xZs2wJ/exec';
 
 window.onload = () => {
   const fmt = d => {
-    const y   = d.getFullYear();
-    const m   = String(d.getMonth() + 1).padStart(2, '0');
-    const dia = String(d.getDate()).padStart(2, '0');
+    const y=d.getFullYear(), m=String(d.getMonth()+1).padStart(2,'0'), dia=String(d.getDate()).padStart(2,'0');
     return `${y}-${m}-${dia}`;
   };
-
-  const hoje        = new Date();
-  const hojeStr     = fmt(hoje);
-  const seteDias    = new Date(); seteDias.setDate(seteDias.getDate() - 7);
-  const primeiroDia = fmt(new Date(hoje.getFullYear(), hoje.getMonth(), 1));
-
-  document.getElementById('data-inicio').max   = hojeStr;
-  document.getElementById('data-fim').max      = hojeStr;
-  document.getElementById('data-inicio').value = fmt(seteDias);
-  document.getElementById('data-fim').value    = hojeStr;
-
-  document.getElementById('anvisa-inicio').max   = hojeStr;
-  document.getElementById('anvisa-fim').max      = hojeStr;
-  document.getElementById('anvisa-inicio').value = primeiroDia;
-  document.getElementById('anvisa-fim').value    = hojeStr;
-
+  const hoje=new Date(), hojeStr=fmt(hoje);
+  const seteDias=new Date(); seteDias.setDate(seteDias.getDate()-7);
+  const primeiroDia=fmt(new Date(hoje.getFullYear(),hoje.getMonth(),1));
+  document.getElementById('data-inicio').max=hojeStr;
+  document.getElementById('data-fim').max=hojeStr;
+  document.getElementById('data-inicio').value=fmt(seteDias);
+  document.getElementById('data-fim').value=hojeStr;
+  document.getElementById('anvisa-inicio').max=hojeStr;
+  document.getElementById('anvisa-fim').max=hojeStr;
+  document.getElementById('anvisa-inicio').value=primeiroDia;
+  document.getElementById('anvisa-fim').value=hojeStr;
   atualizarGraficos(60);
   atualizarTempoReal();
   atualizarMinMax();
-  setInterval(atualizarTempoReal, 60000);
-  setInterval(atualizarMinMax, 60000);
+  setInterval(atualizarTempoReal,60000);
+  setInterval(atualizarMinMax,60000);
 };
 
-function gerarRelatorio() {
-  const ini = document.getElementById('data-inicio').value;
-  const fim = document.getElementById('data-fim').value;
-  if (!ini || !fim) { alert('Selecione as duas datas!'); return; }
-  window.open(`relatorio.html?inicio=${ini}&fim=${fim}`, '_blank');
+function gerarRelatorio(){
+  const ini=document.getElementById('data-inicio').value, fim=document.getElementById('data-fim').value;
+  if(!ini||!fim){alert('Selecione as duas datas!');return;}
+  window.open(`relatorio.html?inicio=${ini}&fim=${fim}`,'_blank');
 }
 
-function baixarRelatorioOficial() {
-  const ini = document.getElementById('anvisa-inicio').value;
-  const fim = document.getElementById('anvisa-fim').value;
-
-  if (!ini || !fim) { alert('Selecione as duas datas!'); return; }
-
-  const [anoI, mesI] = ini.split('-');
-  const [anoF, mesF] = fim.split('-');
-  if (anoI !== anoF || mesI !== mesF) {
-    alert('📋 O Relatório Oficial é gerado um mês por vez.\n\nSelecione datas dentro do mesmo mês.\n\nExemplo:\n• 01/03/2026 até 31/03/2026 → Março\n• 01/02/2026 até 28/02/2026 → Fevereiro');
-    return;
-  }
-
-  const btn = document.getElementById('btn-anvisa');
-  btn.disabled = true;
-  btn.textContent = '⏳ Gerando PDF...';
-
-  const cbName = 'jsonpCb_' + Date.now();
-
-  const timeout = setTimeout(() => {
-    delete window[cbName];
-    const s = document.getElementById(cbName + '_script');
-    if (s) s.remove();
-    btn.disabled = false;
-    btn.textContent = '📄 Baixar Relatório Oficial PDF';
-    alert('❌ Tempo esgotado. Tente novamente.');
-  }, 15000);
-
-  window[cbName] = function(data) {
-    clearTimeout(timeout);
-    delete window[cbName];
-    const s = document.getElementById(cbName + '_script');
-    if (s) s.remove();
-    btn.disabled = false;
-    btn.textContent = '📄 Baixar Relatório Oficial PDF';
-    if (data.ok) { window.open(data.url, '_blank'); }
-    else { alert('❌ Erro: ' + data.erro); }
+function baixarRelatorioOficial(){
+  const ini=document.getElementById('anvisa-inicio').value, fim=document.getElementById('anvisa-fim').value;
+  if(!ini||!fim){alert('Selecione as duas datas!');return;}
+  const[anoI,mesI]=ini.split('-'),[anoF,mesF]=fim.split('-');
+  if(anoI!==anoF||mesI!==mesF){alert('📋 O Relatório Oficial é gerado um mês por vez.\n\nSelecione datas dentro do mesmo mês.\n\nExemplo:\n• 01/03/2026 até 31/03/2026 → Março\n• 01/02/2026 até 28/02/2026 → Fevereiro');return;}
+  const btn=document.getElementById('btn-anvisa');
+  btn.disabled=true;btn.textContent='⏳ Gerando PDF...';
+  const cbName='jsonpCb_'+Date.now();
+  const timeout=setTimeout(()=>{
+    delete window[cbName];const s=document.getElementById(cbName+'_script');if(s)s.remove();
+    btn.disabled=false;btn.textContent='📄 Baixar Relatório Oficial PDF';alert('❌ Tempo esgotado. Tente novamente.');
+  },15000);
+  window[cbName]=function(data){
+    clearTimeout(timeout);delete window[cbName];const s=document.getElementById(cbName+'_script');if(s)s.remove();
+    btn.disabled=false;btn.textContent='📄 Baixar Relatório Oficial PDF';
+    if(data.ok){window.open(data.url,'_blank');}else{alert('❌ Erro: '+data.erro);}
   };
-
-  const script = document.createElement('script');
-  script.id  = cbName + '_script';
-  script.src = APPS_SCRIPT_URL + '?acao=pdf&inicio=' + ini + '&fim=' + fim + '&callback=' + cbName;
+  const script=document.createElement('script');
+  script.id=cbName+'_script';
+  script.src=APPS_SCRIPT_URL+'?acao=pdf&inicio='+ini+'&fim='+fim+'&callback='+cbName;
   document.body.appendChild(script);
 }
 
-function mudarPeriodo(results, btn) {
-  document.querySelectorAll('.periodo-btn').forEach(b => b.classList.remove('ativo'));
-  btn.classList.add('ativo');
-  atualizarGraficos(results);
+function mudarPeriodo(results,btn){
+  document.querySelectorAll('.periodo-btn').forEach(b=>b.classList.remove('ativo'));
+  btn.classList.add('ativo');atualizarGraficos(results);
+}
+function atualizarGraficos(results){
+  const base=`https://thingspeak.com/channels/${CHANNEL}/charts/`;
+  const p=`?bgcolor=%23ffffff&dynamic=true&results=${results}&type=line&width=auto&height=240`;
+  document.getElementById('grafico-temp').src=base+`1${p}&color=%232e7d32&title=Temperatura&yaxis=°C`;
+  document.getElementById('grafico-umid').src=base+`2${p}&color=%231565c0&title=Umidade&yaxis=%25`;
+}
+function stT(v){return(v<TMIN||v>TMAX)?'critico':(v>TMAX-2||v<TMIN+2)?'alerta':'ok';}
+function stU(v){return(v<UMIN||v>UMAX)?'critico':(v>UMAX-5||v<UMIN+5)?'alerta':'ok';}
+function pct(v,mn,mx){return Math.max(0,Math.min(100,((v-mn)/(mx-mn))*100));}
+
+async function atualizarTempoReal(){
+  try{
+    const r=await fetch(`https://api.thingspeak.com/channels/${CHANNEL}/feeds/last.json?api_key=${API_KEY}`);
+    const d=await r.json();const t=parseFloat(d.field1),u=parseFloat(d.field2);
+    if(!isNaN(t)){
+      const s=stT(t);
+      document.getElementById('temp-atual').innerHTML=`${t.toFixed(1)}<span class="valor-unidade">°C</span>`;
+      document.getElementById('temp-atual').className=`valor-atual ${s!=='ok'?s:''}`;
+      document.getElementById('card-temp').className=`sensor-card ${s!=='ok'?s:''}`;
+      document.getElementById('temp-barra').style.width=pct(t,TMIN,TMAX)+'%';
+      document.getElementById('temp-barra').className=`progress-bar-fill ${s!=='ok'?s:''}`;
+      document.getElementById('temp-barra-label').textContent=t.toFixed(1)+'°C';
+    }
+    if(!isNaN(u)){
+      const s=stU(u);
+      document.getElementById('umid-atual').innerHTML=`${u.toFixed(1)}<span class="valor-unidade">%</span>`;
+      document.getElementById('umid-atual').className=`valor-atual ${s!=='ok'?s:''}`;
+      document.getElementById('card-umid').className=`sensor-card ${s!=='ok'?s:''}`;
+      document.getElementById('umid-barra').style.width=pct(u,UMIN,UMAX)+'%';
+      document.getElementById('umid-barra').className=`progress-bar-fill ${s!=='ok'?s:''}`;
+      document.getElementById('umid-barra-label').textContent=u.toFixed(1)+'%';
+    }
+    const pill=document.getElementById('anvisa-pill');
+    const st=!isNaN(t)?stT(t):'ok',su=!isNaN(u)?stU(u):'ok';
+    if(st==='critico'||su==='critico'){pill.textContent='⚠ FORA DOS LIMITES ANVISA';pill.className='status-pill status-critico';}
+    else if(st==='alerta'||su==='alerta'){pill.textContent='⚡ ATENÇÃO — PRÓXIMO DO LIMITE';pill.className='status-pill status-alerta';}
+    else{pill.textContent='✓ DENTRO DOS LIMITES';pill.className='status-pill status-ok';}
+    document.getElementById('ultima-atualizacao').textContent='Atualizado: '+new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+  }catch(e){console.error(e);}
 }
 
-function atualizarGraficos(results) {
-  const base = `https://thingspeak.com/channels/${CHANNEL}/charts/`;
-  const p    = `?bgcolor=%23ffffff&dynamic=true&results=${results}&type=line&width=auto&height=240`;
-  document.getElementById('grafico-temp').src = base + `1${p}&color=%232e7d32&title=Temperatura&yaxis=°C`;
-  document.getElementById('grafico-umid').src = base + `2${p}&color=%231565c0&title=Umidade&yaxis=%25`;
-}
-
-function stT(v) { return (v < TMIN || v > TMAX) ? 'critico' : (v > TMAX - 2 || v < TMIN + 2) ? 'alerta' : 'ok'; }
-function stU(v) { return (v < UMIN || v > UMAX) ? 'critico' : (v > UMAX - 5 || v < UMIN + 5) ? 'alerta' : 'ok'; }
-function pct(v, mn, mx) { return Math.max(0, Math.min(100, ((v - mn) / (mx - mn)) * 100)); }
-
-async function atualizarTempoReal() {
-  try {
-    const r = await fetch(`https://api.thingspeak.com/channels/${CHANNEL}/feeds/last.json?api_key=${API_KEY}`);
-    const d = await r.json();
-    const t = parseFloat(d.field1), u = parseFloat(d.field2);
-
-    if (!isNaN(t)) {
-      const s = stT(t);
-      document.getElementById('temp-atual').innerHTML         = `${t.toFixed(1)}<span class="valor-unidade">°C</span>`;
-      document.getElementById('temp-atual').className         = `valor-atual ${s !== 'ok' ? s : ''}`;
-      document.getElementById('card-temp').className          = `sensor-card ${s !== 'ok' ? s : ''}`;
-      document.getElementById('temp-barra').style.width       = pct(t, TMIN, TMAX) + '%';
-      document.getElementById('temp-barra').className         = `progress-bar-fill ${s !== 'ok' ? s : ''}`;
-      document.getElementById('temp-barra-label').textContent = t.toFixed(1) + '°C';
-    }
-
-    if (!isNaN(u)) {
-      const s = stU(u);
-      document.getElementById('umid-atual').innerHTML         = `${u.toFixed(1)}<span class="valor-unidade">%</span>`;
-      document.getElementById('umid-atual').className         = `valor-atual ${s !== 'ok' ? s : ''}`;
-      document.getElementById('card-umid').className          = `sensor-card ${s !== 'ok' ? s : ''}`;
-      document.getElementById('umid-barra').style.width       = pct(u, UMIN, UMAX) + '%';
-      document.getElementById('umid-barra').className         = `progress-bar-fill ${s !== 'ok' ? s : ''}`;
-      document.getElementById('umid-barra-label').textContent = u.toFixed(1) + '%';
-    }
-
-    const pill = document.getElementById('anvisa-pill');
-    const st   = !isNaN(t) ? stT(t) : 'ok';
-    const su   = !isNaN(u) ? stU(u) : 'ok';
-    if (st === 'critico' || su === 'critico') {
-      pill.textContent = '⚠ FORA DOS LIMITES ANVISA'; pill.className = 'status-pill status-critico';
-    } else if (st === 'alerta' || su === 'alerta') {
-      pill.textContent = '⚡ ATENÇÃO — PRÓXIMO DO LIMITE'; pill.className = 'status-pill status-alerta';
-    } else {
-      pill.textContent = '✓ DENTRO DOS LIMITES'; pill.className = 'status-pill status-ok';
-    }
-
-    document.getElementById('ultima-atualizacao').textContent =
-      'Atualizado: ' + new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-
-  } catch (e) { console.error(e); }
-}
-
-async function atualizarMinMax() {
-  try {
-    const r = await fetch(`https://api.thingspeak.com/channels/${CHANNEL}/feeds.json?api_key=${API_KEY}&results=288`);
-    const d = await r.json();
-    const f = d.feeds || [];
-    const ts = f.map(x => parseFloat(x.field1)).filter(v => !isNaN(v));
-    const hs = f.map(x => parseFloat(x.field2)).filter(v => !isNaN(v));
-    if (ts.length) {
-      document.getElementById('temp-min').textContent = Math.min(...ts).toFixed(1) + '°C';
-      document.getElementById('temp-max').textContent = Math.max(...ts).toFixed(1) + '°C';
-    }
-    if (hs.length) {
-      document.getElementById('umid-min').textContent = Math.min(...hs).toFixed(1) + '%';
-      document.getElementById('umid-max').textContent = Math.max(...hs).toFixed(1) + '%';
-    }
-  } catch (e) { console.error(e); }
+async function atualizarMinMax(){
+  try{
+    const r=await fetch(`https://api.thingspeak.com/channels/${CHANNEL}/feeds.json?api_key=${API_KEY}&results=288`);
+    const d=await r.json();const f=d.feeds||[];
+    const ts=f.map(x=>parseFloat(x.field1)).filter(v=>!isNaN(v));
+    const hs=f.map(x=>parseFloat(x.field2)).filter(v=>!isNaN(v));
+    if(ts.length){document.getElementById('temp-min').textContent=Math.min(...ts).toFixed(1)+'°C';document.getElementById('temp-max').textContent=Math.max(...ts).toFixed(1)+'°C';}
+    if(hs.length){document.getElementById('umid-min').textContent=Math.min(...hs).toFixed(1)+'%';document.getElementById('umid-max').textContent=Math.max(...hs).toFixed(1)+'%';}
+  }catch(e){console.error(e);}
 }
 </script>
 </body>
