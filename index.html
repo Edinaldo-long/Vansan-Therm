@@ -52,7 +52,12 @@
   .header-name { display:flex; flex-direction:column; min-width:0; flex-shrink:1; }
   .header-name strong {
     color:#fff; font-size:1rem; font-weight:700;
-    letter-spacing:.02em; line-height:1.2;
+    letter-spacing:.02em; line-height:1.15;
+    white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+  }
+  .header-name small {
+    color:var(--verde-light); font-size:.58rem; font-weight:600;
+    letter-spacing:.07em; text-transform:uppercase;
     white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
   }
   .header-right {
@@ -149,7 +154,8 @@
   /* ── MOBILE ── */
   @media (max-width:700px) {
     .header-logo-img { height:34px; }
-    .header-name strong { font-size:.88rem; }
+    .header-name strong { font-size:.85rem; }
+    .header-name small  { font-size:.55rem; display:block; }
     .header-title { display:none; }
     .status-badge { font-size:.65rem; padding:4px 9px; }
 
@@ -159,10 +165,17 @@
     .grafico-item:first-child { border-right:none; border-bottom:1px solid var(--border); }
   }
 
-  /* ── telas muito pequenas (< 380px) ── */
-  @media (max-width:380px) {
-    .header-name strong { font-size:.75rem; }
+  /* ── telas muito pequenas (< 420px) ── */
+  @media (max-width:420px) {
+    .header-name strong { font-size:.78rem; }
+    .header-name small  { font-size:.5rem; display:block; }
+    .header-logo-img { height:30px; }
     .status-badge { font-size:.6rem; padding:4px 7px; gap:4px; }
+  }
+
+  /* ── telas minúsculas (< 340px) ── */
+  @media (max-width:340px) {
+    .header-name small  { display:none; }
     .header-divider { display:none; }
   }
 </style>
@@ -177,6 +190,7 @@
     <div class="header-divider"></div>
     <div class="header-name">
       <strong>Vansan Therm</strong>
+      <small>Monitoramento Inteligente</small>
     </div>
   </div>
   <div class="header-right">
